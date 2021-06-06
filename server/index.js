@@ -28,10 +28,6 @@ app.post('/user', (req, res) => {
 })
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
-
-app.get('/all', (req, res) => {
   
   db.all('SELECT username, server, SUM(score) AS Score, SUM(1) AS Total FROM Match LEFT JOIN User USING(id) GROUP BY id, server', (err, rows) => {
     if(err) {
@@ -44,6 +40,19 @@ app.get('/all', (req, res) => {
     }
   })
 })
+
+app.put('/updateuser', (req, res => {
+  db.all('SELECT * FROM User WHERE username = ? AND server = ? and region = ?', (err, rows) => {
+    if(err) {
+      console.log('Error updating user: ' + err)
+    } else {
+      rows.forEach(function(user) {
+        updateUser(user)
+      })
+      res.status(200).send('User <' + user.username + ", " + user.server + ", " + user.region + "> was updated")
+    }
+  })
+}))
 
 app.listen(port, () => {
   console.log(`Starting NexScore at http://localhost:${port}`)
