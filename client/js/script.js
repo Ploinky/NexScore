@@ -6,7 +6,7 @@ headers.append('Access-Control-Allow-Origin', '*')
 var options = { headers: headers }
 
 
-fetch("http://ploinky.de:5001", options).then(
+fetch("https://ploinky.de:5001", options).then(
   res => {
     res.json().then(
       data => {
