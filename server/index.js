@@ -50,7 +50,7 @@ app.put('/updateuser', (req, res) => {
       rows.forEach(function(user) {
         updateUser(user)
       })
-      res.status(200).send('User <' + user.username + ", " + user.server + ", " + user.region + "> was updated")
+      res.status(200).send('User <' + req.body.username + ", " + req.body.server + ", " + req.body.region + "> was updated")
     }
   })
 })
