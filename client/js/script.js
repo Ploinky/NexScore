@@ -26,6 +26,9 @@ fetch("https://ploinky.de:5001", options).then(
 
           var totalCell = row.insertCell()
           totalCell.innerHTML = user.total
+
+          var pctCell = row.insertCell()
+          pctCell.innerHTML = user.pct
         })
 
         console.log(data)
