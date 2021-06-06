@@ -32,7 +32,7 @@ app.post('/user', (req, res) => {
 
 app.get('/', (req, res) => {
   
-  db.all('SELECT username, server, SUM(score) AS Score, SUM(1) AS Total FROM Match LEFT JOIN User USING(id) GROUP BY id, server', (err, rows) => {
+  db.all('SELECT username, server, SUM(score) AS score, SUM(1) AS total FROM Match LEFT JOIN User USING(id) GROUP BY id, server ORDER BY score DESC', (err, rows) => {
     if(err) {
       console.log('Error fetching users: ' + err)
     } else {
