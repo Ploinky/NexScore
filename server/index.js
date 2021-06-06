@@ -49,8 +49,6 @@ app.listen(port, () => {
   const DB_URL = 'mongodb://' + MONGO_HOSTNAME + ':' + MONGO_PORT + '/' + MONGO_DB
   db.connect(DB_URL)
   console.log('Connected to mongodb at ' + MONGO_HOSTNAME)
-
-  console.log(process.env.RIOT_API_KEY)
 })
 
 var intervalId = setInterval(function() {
@@ -87,8 +85,12 @@ function updateUser(user) {
       })
       
       resp.on('end', () => {
-        console.log('data: ' + data)
+        data = JSON.parse(data)
+        user.summonerId = data.id
+        user.save()
       })   
-    })
+    }).on("error", (err) => {
+      console.log("Error: " + err.message);
+    });
   }
 }
