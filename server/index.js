@@ -51,7 +51,7 @@ app.listen(port, () => {
 
 var intervalId = setInterval(function() {
     updateData()
-  }, 1000);
+  }, 3600000);
 
 function updateData() {
   db.all('SELECT * FROM User', (err, rows) => {
