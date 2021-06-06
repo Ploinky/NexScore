@@ -42,9 +42,6 @@ app.get('/', (req, res) => {
     if(err) {
       console.log('Error fetching users: ' + err)
     } else {
-      rows.forEach(function(user) {
-        console.log(user)
-      })
       res.status(200).send(rows)
     }
   })
