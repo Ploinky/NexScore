@@ -1,30 +1,48 @@
-const { rejects } = require('assert/strict');
-const sqlite = require('sqlite');
 
-class DbConn {
-    constructor() {
-        this.db = new sqlite.Database('/home/joba/sqlite/nexscore.db', (err) => {
-            if(err) {
-                return console.log("Could not connect to sqlite database: " + err)
+const sqlite3 = require('sqlite3')
+require('dotenv').config();
+
+let db = new sqlite3.Database(process.env.DB_FILE.toString(), (err) => {
+    if(err) {
+        console.log("Could not connect to sqlite database: " + err)
+        throw err
+    }
+
+    console.log("Connected to sqlite database")
+
+    db.run(`CREATE TABLE IF NOT EXISTS User (
+        id String PRIMARY KEY,
+        puuid String,
+        username String not null, 
+        server String not null,
+        region String not null
+        )`,
+        (err) => {
+            if (err) {
+                console.log('Error creating table User!')
+            } else {
+                console.log('Table User ok.')
             }
-            
-            return console.log("Connected to sqlite database")
-        })
-    }
+        }
+    )
 
-    run(sql, params = []) {
-        return new Promise((resolve, reject) => {
-            this.db.run(sql, params, function(err) {
-                if(err) {
-                    console.log('Error running sql: ' + sql)
-                    console.log(err)
-                    reject(err)
-                } else {
-                    resolve({id: this.lastId})
-                }
-            })
-        })
-    }
-}
+    db.run(`CREATE TABLE IF NOT EXISTS Match (
+        id String not null,
+        matchid String not null,
+        score Boolean,
+        FOREIGN KEY (id) REFERENCES User(id),
+        PRIMARY KEY (id, matchid)
+        )`,
+        (err) => {
+            if (err) {
+                console.log('Error creating table Match!')
+            } else {
+                console.log('Table Match ok.')
+            }
+        }
+    )
+})
 
-module.exports = DbConn
+
+
+module.exports = db

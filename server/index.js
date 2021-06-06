@@ -14,14 +14,15 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.post('/user', (req, res) => {
-  db.run('INSERT INTO User VALUES(id, username, server, region)',
+  console.log(req.body)
+  db.run('INSERT INTO User (id, username, server, region) VALUES (?, ?, ?, ?)',
   [uuidv4(), req.body.username, req.body.server, req.body.region],
   function(err) {
     if (err) {
-      return console.log(err.message);
+      return console.log('Error inserting User: ' + err.message);
     }
     
-    console.log(`A row has been inserted`)
+    console.log('User (' + req.body.username + ', ' + req.body.server + ', ' + req.body.region +  ') created.')
     res.status(200).send('user created')
   });
 })
@@ -31,12 +32,17 @@ app.get('/', (req, res) => {
 })
 
 app.get('/all', (req, res) => {
-  Match.aggregate([{'$match': {'score': true }},
-  { '$group': { _id: '$puuid', count: { $sum: 1 }}}])
-  .then(res => {
-    console.log(res)
+  
+  db.all('SELECT username, server, SUM(score) AS Score, SUM(1) AS Total FROM Match LEFT JOIN User USING(id) GROUP BY id, server', (err, rows) => {
+    if(err) {
+      console.log('Error fetching users: ' + err)
+    } else {
+      rows.forEach(function(user) {
+        console.log(user)
+      })
+      res.status(200).send(rows)
+    }
   })
-  res.send('Hello world')
 })
 
 app.listen(port, () => {
@@ -45,18 +51,18 @@ app.listen(port, () => {
 
 var intervalId = setInterval(function() {
     updateData()
-  }, 50000);
+  }, 1000);
 
 function updateData() {
-  User.find({}, function(err, users) {
+  db.all('SELECT * FROM User', (err, rows) => {
     if(err) {
-      console.log(err)
+      console.log('Error fetching users: ' + err)
     } else {
-      users.forEach(function(user) {
+      rows.forEach(function(user) {
         updateUser(user)
       })
     }
-  });
+  })
 }
 
 function updateUser(user) {
@@ -78,11 +84,10 @@ function updateUser(user) {
       
       resp.on('end', () => {
         data = JSON.parse(data)
-        user.puuid = data.puuid
-        user.save()
+        db.run('UPDATE User SET puuid = ? WHERE id = ?', [data.puuid, user.id])
       })   
     }).on("error", (err) => {
-      console.log("Error: " + err.message);
+      console.log("Error updating puuid of user <" + user.username + ">: " + err.message);
     });
 
     return;
@@ -105,67 +110,62 @@ function updateUser(user) {
     resp.on('end', () => {
       data = JSON.parse(data)
       
-      data.forEach((id) => {
-        const match = new Match({
-          puuid: user.puuid,
-          region: user.region,
-          matchid: id
+      if(data && Object.prototype.toString.call(data) === '[object Array]')
+      {
+        data.forEach((id) => {
+          if(id) {
+            db.run('INSERT OR IGNORE INTO Match(id, matchid) VALUES (?, ?)', [user.id, id], function(err) {
+              if (err) {
+                return console.log('Error inserting Match: ' + err.message);
+              }
+              
+            })
+          }
         })
-
-        Match.countDocuments({puuid: match.puuid, region: match.region, matchid: match.matchid},
-          function (err, count){ 
-            if(count == 0){
-              match.save()
-            }
-        })
-      })
+      }
     })   
   }).on("error", (err) => {
     console.log("Error: " + err.message);
   })
 
-  Match.find({ puuid: user.puuid, region: user.region },
-    function(err, matches) {
-      if(err) {
-        console.log(err)
-      } else {
-        matches.forEach((match) => {
-          if(!match.score) {
+  db.all('SELECT * FROM Match WHERE Score IS NULL AND id = ?', [user.id], (err, rows) => {
+    if(err) {
+      console.log('Error fetching matches without score for user <' + user.id + '>: ' + err)
+    } else {
+      rows.forEach(function(match) {
 
-            options = {
-              headers: { 'X-Riot-Token': process.env.RIOT_API_KEY },
-              host: user.region + '.api.riotgames.com',
-              path: '/lol/match/v5/matches/' + match.matchid
-            }
+        options = {
+          headers: { 'X-Riot-Token': process.env.RIOT_API_KEY },
+          host: user.region + '.api.riotgames.com',
+          path: '/lol/match/v5/matches/' + match.matchid
+        }
 
-            https.get(options, (resp) => {
-              let data = '';
-            
-              // A chunk of data has been received.
-              resp.on('data', (chunk) => {
-                data += chunk;
-              })
-              
-              resp.on('end', () => {
-                data = JSON.parse(data)
-                if(!data.info) {
-                  console.log(data)
-                } else {
-                  data.info.participants.forEach((p) => {
-                    if(p.puuid === user.puuid) {
-                      match.score = p.nexusKills
-                      match.save()
-                    }
-                  })
+        https.get(options, (resp) => {
+          let data = '';
+        
+          // A chunk of data has been received.
+          resp.on('data', (chunk) => {
+            data += chunk;
+          })
+          
+          resp.on('end', () => {
+            data = JSON.parse(data)
+            if(!data.info) {
+              console.log(data)
+            } else {
+              data.info.participants.forEach((p) => {
+                if(p.puuid === user.puuid) {
+                  db.run('UPDATE Match SET score = ? WHERE id = ? AND matchid = ?', [p.nexusKills, user.id, match.matchid])
+                  console.log('Update score on match <' + user.id + ", " + match.matchid + '>')
                 }
-              })   
-            }).on("error", (err) => {
-              console.log("Error: " + err.message);
-            })
-
-
-          }
+              })
+            }
+          })   
+        }).on("error", (err) => {
+          console.log("Error: " + err.message);
         })
-      }
-    })
+      })
+    }
+  })
+
 }
