@@ -1,9 +1,19 @@
-const mongoose = require('mongoose')
+class Match {
+    constructor(dao) {
+        this.dao = dao
+    }
 
-const matchSchema = new mongoose.Schema({
-    username: String,
-    matchId: String,
-    score: Boolean
-})
+    createTable() {
+        const sql = `CREATE TABLE IF NOT EXISTS Match(
+            id String not null,
+            matchid String not null,
+            score Boolean,
+            FOREIGN KEY(id) REFERENCES User(id  )
+            PRIMARY KEY(id, matchid)
+            )`
 
-module.exports = mongoose.model('Match', matchSchema)
+        return this.dao.run(sql)
+    }
+}
+
+module.exports = Match

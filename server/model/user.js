@@ -1,11 +1,17 @@
-const mongoose = require('mongoose')
+class User {
+    constructor(dao) {
+        this.dao = dao
+    }
 
-const userSchema = new mongoose.Schema({
-    username: String,
-    server: String,
-    summonerId: String
-})
+    createTable() {
+        const sql = `CREATE TABLE IF NOT EXISTS User
+            id String not null,
+            puuid String,
+            username String,
+            server String,
+            region String
+        )`
+    }
+}
 
-userSchema.index({ username: 1, server: 1}, { unique: true });
-
-module.exports = mongoose.model('User', userSchema)
+module.exports = User

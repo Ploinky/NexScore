@@ -1,29 +1,30 @@
-//Include mongoose library  
-mongoose = require('mongoose')
+const { rejects } = require('assert/strict');
+const sqlite = require('sqlite');
 
-module.exports = {
-    connect: DB_URL => {
-
-        mongoose.set('useNewUrlParser', true);
-        mongoose.set('useFindAndModify', false);
-        mongoose.set('useCreateIndex', true);
-        mongoose.set('useUnifiedTopology', true);
-        mongoose.connect(DB_URL);
-
-        //Log an error if we fail to connect
-        mongoose.connection.on('error', err => {
-            console.error(err);
-            console.log(
-            'MongoDB connection failed: ' + DB_URL
-        );
-
-        process.exit();
-
-        });
-    },
-
-    //close the connection
-    close: () => {
-        mongoose.connection.close();
+class DbConn {
+    constructor() {
+        this.db = new sqlite.Database('/home/joba/sqlite/nexscore.db', (err) => {
+            if(err) {
+                return console.log("Could not connect to sqlite database: " + err)
+            }
+            
+            return console.log("Connected to sqlite database")
+        })
     }
-};
+
+    run(sql, params = []) {
+        return new Promise((resolve, reject) => {
+            this.db.run(sql, params, function(err) {
+                if(err) {
+                    console.log('Error running sql: ' + sql)
+                    console.log(err)
+                    reject(err)
+                } else {
+                    resolve({id: this.lastId})
+                }
+            })
+        })
+    }
+}
+
+module.exports = DbConn
