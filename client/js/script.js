@@ -22,10 +22,10 @@ fetch("http://ploinky.de:5001", options).then(
           serverCell.innerHTML = user.server
 
           var scoreCell = row.insertCell()
-          scoreCell.innerHTML = user.Score
+          scoreCell.innerHTML = user.score
 
           var totalCell = row.insertCell()
-          totalCell.innerHTML = user.Total
+          totalCell.innerHTML = user.total
         })
 
         console.log(data)

@@ -10,6 +10,12 @@ const Match = require('./model/match')
 const cors = require('cors')
 require('dotenv').config();
 
+const fs = require('fs')
+
+const options = {
+    key: fs.readFileSync(process.env.KEY_FILE),
+    cert: fs.readFileSync(process.env.CHAIN_FILE)
+}
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -182,3 +188,5 @@ function updateUser(user) {
   })
 
 }
+
+https.createServer(options, app).listen(port)
