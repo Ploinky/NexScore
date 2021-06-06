@@ -64,10 +64,6 @@ app.put('/updateuser', (req, res) => {
   })
 })
 
-app.listen(port, () => {
-  console.log(`Starting NexScore at http://localhost:${port}`)
-})
-
 var intervalId = setInterval(function() {
     updateData()
   }, 3600000);
@@ -189,4 +185,6 @@ function updateUser(user) {
 
 }
 
-https.createServer(options, app).listen(port)
+https.createServer(options, app).listen(port, () => {
+  console.log(`Starting NexScore at https://localhost:${port}`)
+})
