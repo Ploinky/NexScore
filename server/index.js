@@ -41,18 +41,19 @@ app.get('/', (req, res) => {
   })
 })
 
-app.put('/updateuser', (req, res => {
-  db.all('SELECT * FROM User WHERE username = ? AND server = ? and region = ?', (err, rows) => {
+app.put('/updateuser', (req, res) => {
+  db.all('SELECT * FROM User WHERE username = ? AND server = ? and region = ?',
+	[req.body.username, req.body.server, req.body.region], (err, rows) => {
     if(err) {
       console.log('Error updating user: ' + err)
     } else {
       rows.forEach(function(user) {
         updateUser(user)
       })
-      res.status(200).send('User <' + user.username + ", " + user.server + ", " + user.region + "> was updated")
+      res.status(200).send('User <' + req.body.username + ", " + req.body.server + ", " + req.body.region + "> was updated")
     }
   })
-}))
+})
 
 app.listen(port, () => {
   console.log(`Starting NexScore at http://localhost:${port}`)
