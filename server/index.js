@@ -5,6 +5,7 @@ const port = 5001
 const db = require('./db')
 const User = require('./model/user')
 const Match = require('./model/match')
+const https = require('https');
 require('dotenv').config();
 
 
@@ -17,14 +18,19 @@ app.post('/user', (req, res) => {
   // We create a new document and then save it in database    
   const user = new User({
     username: req.body.username,
-    summonerId: req.body.summonerId
+    server: req.body.server
   });
 
   // Save is asynchronous and can fail
   user.save(function(err) {
     if(err) {
       console.log(err)
-      res.status(409).send('User already exists')
+
+      if(err.code === 11000) {
+        res.status(409).send('User already exists')
+      } else {
+        res.status(500).send(err)
+      }
     } else {
       res.status(200).send('User added')
     }
@@ -64,5 +70,25 @@ function updateData() {
 }
 
 function updateUser(user) {
-  console.log(user)
+  if(!user.summonerId)
+  {
+    var options = {
+      headers: { 'X-Riot-Token': process.env.RIOT_API_KEY },
+      host: user.server + '.api.riotgames.com',
+      path: '/lol/summoner/v4/summoners/by-name/' + user.username 
+    }
+
+    https.get(options, (resp) => {
+      let data = '';
+    
+      // A chunk of data has been received.
+      resp.on('data', (chunk) => {
+        data += chunk;
+      })
+      
+      resp.on('end', () => {
+        console.log('data: ' + data)
+      })   
+    })
+  }
 }
