@@ -30,7 +30,7 @@ app.post('/user', (req, res) => {
     if(err) {
       console.log('Error fetching users: ' + err)
     } else {
-      if(rows > 0) {
+      if(rows.length > 0) {
         updateUser(rows[0])
       } else {
         db.run('INSERT INTO User (id, username, server, region) VALUES (?, ?, ?, ?)',
