@@ -23,17 +23,29 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cors())
 
 app.post('/user', (req, res) => {
-  console.log(req.body)
-  db.run('INSERT INTO User (id, username, server, region) VALUES (?, ?, ?, ?)',
-  [uuidv4(), req.body.username, req.body.server, req.body.region],
-  function(err) {
-    if (err) {
-      return console.log('Error inserting User: ' + err.message);
+
+  db.all('SELECT * FROM User  WHERE username = ? AND server = ? AND region = ?',
+  [req.body.username, req.body.server, req.body.region],
+  (err, rows) => {
+    if(err) {
+      console.log('Error fetching users: ' + err)
+    } else {
+      if(rows > 0) {
+        updateUser(rows[0])
+      } else {
+        db.run('INSERT INTO User (id, username, server, region) VALUES (?, ?, ?, ?)',
+        [uuidv4(), req.body.username, req.body.server, req.body.region],
+        function(err) {
+          if (err) {
+            return console.log('Error inserting User: ' + err.message);
+          }
+          
+          console.log('User (' + req.body.username + ', ' + req.body.server + ', ' + req.body.region +  ') created.')
+          res.status(200).send('user created')
+        });
+      }
     }
-    
-    console.log('User (' + req.body.username + ', ' + req.body.server + ', ' + req.body.region +  ') created.')
-    res.status(200).send('user created')
-  });
+  })
 })
 
 app.get('/', (req, res) => {
