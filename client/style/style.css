@@ -19,9 +19,10 @@ body {
   display: grid;
   grid-template-rows: 1;
   grid-template-columns: 2;
-  position: relative;
+  position: sticky;
   width: 100%;
   top: 0;
+  background-color: var(--primary-color)
 }
 
 #heading {
@@ -92,6 +93,7 @@ h1 {
 .scoreTable {
   border-collapse: collapse;
   top: 50px;
+  margin-bottom: 50px;
 }
   
 .scoreTable td {
