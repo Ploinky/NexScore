@@ -32,6 +32,7 @@ app.post('/user', (req, res) => {
     } else {
       if(rows.length > 0) {
         updateUser(rows[0])
+	res.status(200).send('user updated')
       } else {
         db.run('INSERT INTO User (id, username, server, region) VALUES (?, ?, ?, ?)',
         [uuidv4(), req.body.username, req.body.server, req.body.region],
