@@ -34,16 +34,10 @@ function addUser() {
     var options = { method: 'POST',
     headers: headers,
     body: JSON.stringify(data)}
-
-    console.log(options);
-    
-
+  
     fetch("https://ploinky.de:5001/user", options).then(
-      res => {
-        alert(res)
-        res.json().then(
-          data => {alert (data);}
-        )
+      data => {
+        console.log(data)
       }
     )
 
@@ -80,6 +74,8 @@ function onLoad() {
   localStorage.setItem('darkmode', 0);
 
   let headers = new Headers()
+  headers.append('Access-Control-Allow-Origin', '*');
+  headers.append('Content-Type', 'application/json');
 
   var options = { headers: headers }
 
