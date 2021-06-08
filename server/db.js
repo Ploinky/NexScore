@@ -15,6 +15,7 @@ let db = new sqlite3.Database(process.env.DB_FILE.toString(), (err) => {
         server String not null,
         region String not null,
         puuid String,
+        lastupdate Integer,
         PRIMARY KEY (username, server, region)
         )`,
         (err) => {

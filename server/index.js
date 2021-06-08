@@ -75,10 +75,10 @@ app.put('/updateuser', (req, res) => {
 
 var intervalId = setInterval(function() {
     updateData()
-  }, 3600000);
+  }, 60000);
 
 function updateData() {
-  db.all('SELECT * FROM User', (err, rows) => {
+  db.all('SELECT * FROM User WHERE lastupdate < strftime("%s", "now") - 3600', (err, rows) => {
     if(err) {
       console.log('Error fetching users: ' + err)
     } else {
@@ -140,8 +140,9 @@ function updateUser(user) {
             db.run('INSERT OR IGNORE INTO Match(username, server, region, matchid) VALUES (?, ?, ?, ?)', [user.username, user.server, user.region, id], function(err) {
               if (err) {
                 return console.log('Error inserting Match: ' + err.message);
+              } else {
+                db.run("UPDATE User SET lastupdate = strftime('%s', 'now') WHERE username = ? AND server = ? AND region = ?", [data.puuid, user.username, user.server, user.region])
               }
-              
             })
           }
         })
