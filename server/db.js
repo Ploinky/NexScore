@@ -11,11 +11,11 @@ let db = new sqlite3.Database(process.env.DB_FILE.toString(), (err) => {
     console.log("Connected to sqlite database")
 
     db.run(`CREATE TABLE IF NOT EXISTS User (
-        id String PRIMARY KEY,
-        puuid String,
         username String not null, 
         server String not null,
         region String not null
+        puuid String,
+        PRIMARY KEY (username, server, region)
         )`,
         (err) => {
             if (err) {
@@ -27,11 +27,12 @@ let db = new sqlite3.Database(process.env.DB_FILE.toString(), (err) => {
     )
 
     db.run(`CREATE TABLE IF NOT EXISTS Match (
-        id String not null,
+        username String not null,
+        server String not null,
+        region String not null,
         matchid String not null,
         score Boolean,
-        FOREIGN KEY (id) REFERENCES User(id),
-        PRIMARY KEY (id, matchid)
+        PRIMARY KEY (usernam, server, region, matchid)
         )`,
         (err) => {
             if (err) {
