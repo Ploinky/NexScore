@@ -78,7 +78,7 @@ var intervalId = setInterval(function() {
   }, 60000);
 
 function updateData() {
-  db.all('SELECT * FROM User WHERE lastupdate < strftime("%s", "now") - 3600', (err, rows) => {
+  db.all('SELECT * FROM User WHERE lastupdate IS NULL OR lastupdate < strftime("%s", "now") - 3600', (err, rows) => {
     if(err) {
       console.log('Error fetching users: ' + err)
     } else {
