@@ -19,7 +19,7 @@ let db = new sqlite3.Database(process.env.DB_FILE.toString(), (err) => {
         )`,
         (err) => {
             if (err) {
-                console.log('Error creating table User!')
+                console.log('Error creating table User! ' + err)
             } else {
                 console.log('Table User ok.')
             }
@@ -32,11 +32,11 @@ let db = new sqlite3.Database(process.env.DB_FILE.toString(), (err) => {
         region String not null,
         matchid String not null,
         score Boolean,
-        PRIMARY KEY (usernam, server, region, matchid)
+        PRIMARY KEY (username, server, region, matchid)
         )`,
         (err) => {
             if (err) {
-                console.log('Error creating table Match!')
+                console.log('Error creating table Match!' + err)
             } else {
                 console.log('Table Match ok.')
             }
