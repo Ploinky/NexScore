@@ -13,7 +13,7 @@ let db = new sqlite3.Database(process.env.DB_FILE.toString(), (err) => {
     db.run(`CREATE TABLE IF NOT EXISTS User (
         username String not null, 
         server String not null,
-        region String not null
+        region String not null,
         puuid String,
         PRIMARY KEY (username, server, region)
         )`,
