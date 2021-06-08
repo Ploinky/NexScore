@@ -10,6 +10,7 @@ body {
  color: var(--font-color);
  background-color: var(--primary-color);
  font-size: 20px;
+ transition: background-color 1s, color 1s;
 }
 
 /* Header */
@@ -22,7 +23,8 @@ body {
   position: sticky;
   width: 100%;
   top: 0;
-  background-color: var(--primary-color)
+  background-color: var(--primary-color);
+  transition: background-color 1s, color 1s;
 }
 
 #heading {
