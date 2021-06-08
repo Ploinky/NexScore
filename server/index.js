@@ -140,8 +140,6 @@ function updateUser(user) {
             db.run('INSERT OR IGNORE INTO Match(username, server, region, matchid) VALUES (?, ?, ?, ?)', [user.username, user.server, user.region, id], function(err) {
               if (err) {
                 return console.log('Error inserting Match: ' + err.message);
-              } else {
-                db.run("UPDATE User SET lastupdate = strftime('%s', 'now') WHERE username = ? AND server = ? AND region = ?", [user.username, user.server, user.region])
               }
             })
           }
@@ -181,6 +179,7 @@ function updateUser(user) {
                 if(p.puuid === user.puuid) {
                   db.run('UPDATE Match SET score = ? WHERE username = ? AND server = ? AND region = ? AND matchid = ?',
                   [p.nexusKills, user.username, user.server, user.region, match.matchid])
+                  db.run("UPDATE User SET lastupdate = strftime('%s', 'now') WHERE username = ? AND server = ? AND region = ?", [user.username, user.server, user.region])
                   console.log('Update score on match <' + user.username + ", " + match.matchid + '>')
                 }
               })
