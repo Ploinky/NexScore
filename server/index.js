@@ -141,7 +141,7 @@ function updateUser(user) {
               if (err) {
                 return console.log('Error inserting Match: ' + err.message);
               } else {
-                db.run("UPDATE User SET lastupdate = strftime('%s', 'now') WHERE username = ? AND server = ? AND region = ?", [data.puuid, user.username, user.server, user.region])
+                db.run("UPDATE User SET lastupdate = strftime('%s', 'now') WHERE username = ? AND server = ? AND region = ?", [user.username, user.server, user.region])
               }
             })
           }
