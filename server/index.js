@@ -31,10 +31,9 @@ app.post('/user', (req, res) => {
     } else {
       if(rows.length > 0) {
         updateUser(rows[0])
-	res.status(200).send('user updated')
+	      res.status(200).send('user updated')
       } else {
-        db.run('INSERT INTO User (username, server, region) VALUES (?, ?, ?)',
-        [req.body.username, req.body.server, req.body.region],
+        db.run('INSERT INTO User (username, server, region) VALUES (?, ?, ?)', [req.body.username, req.body.server, req.body.region],
         function(err) {
           if (err) {
             return console.log('Error inserting User: ' + err.message);

@@ -9,9 +9,19 @@ function addUser() {
                 <label for="username">Username</label>
                 <input type="text" name="username" id="username" value="" class="text ui-widget-content ui-corner-all">
                 <label for="server">Server</label>
-                <input type="text" name="server" id="server" value="" class="text ui-widget-content ui-corner-all">
-                <label for="region">Region</label>
-                <input type="text" name="region" id="region" value="" class="text ui-widget-content ui-corner-all">
+                <select name="server" id="server">
+                    <option value="euw1">EUW</option>
+                    <option value="na1">NA</option>
+                    <option value="kr">KR</option>
+                    <option value="eun1">EUNE</option>
+                    <option value="br1">BR</option>
+                    <option value="LA1">LAN</option>
+                    <option value="LA2">LAS</option>
+                    <option value="oc1">OCE</option>
+                    <option value="ru1">RU</option>
+                    <option value="tr1">TR</option>
+                    <option value="jp1">JP</option>
+                </select><br>
             
                 <!-- Allow form submission with keyboard without duplicating the dialog button -->
                 <input type="submit" value='Add user' tabindex="-1">
@@ -24,10 +34,30 @@ function addUser() {
 
     var username = dialog.find('#username').val();
     var server = dialog.find('#server').val();
-    var region = dialog.find('#region').val();
+    var region = "";
+    
+    switch(server) {
+      case "euw1":
+      case "eun1":
+      case "tr1":
+      case "ru1":
+        region = "europe";
+        break;
+      case "na1":
+      case "br1":
+      case "LA1":
+      case "LA2":
+        region = "americas";
+        break;
+      case "kr":
+      case "oc1":
+      case "jp1":
+        region = "asia";
+        break;
+    }
     
     data = { 'username': username, 'server': server, 'region': region};
-
+    
     headers = new Headers();
     headers.append('Access-Control-Allow-Origin', '*');
     headers.append('Content-Type', 'application/json');
@@ -42,8 +72,6 @@ function addUser() {
     )
 
     document.getElementById('username').value = '';
-    document.getElementById('server').value = '';
-    document.getElementById('region').value = "";
     dialog.dialog( "close" );
   });
 }
