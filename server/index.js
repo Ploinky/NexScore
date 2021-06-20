@@ -173,7 +173,10 @@ function updateUser(user) {
           resp.on('end', () => {
             data = JSON.parse(data)
             if(!data.info) {
-              console.log(data)
+              db.run('UPDATE Match SET score = ? WHERE username = ? AND server = ? AND region = ? AND matchid = ?',
+              [0, user.username, user.server, user.region, match.matchid])
+              db.run("UPDATE User SET lastupdate = strftime('%s', 'now') WHERE username = ? AND server = ? AND region = ?", [user.username, user.server, user.region])
+              console.log('Update score on match <' + user.username + ", " + match.matchid + '>')
             } else {
               data.info.participants.forEach((p) => {
                 if(p.puuid === user.puuid) {
