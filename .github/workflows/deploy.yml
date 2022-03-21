@@ -23,8 +23,8 @@ jobs:
       - name: Beanstalk Deploy for JAR
         uses: DylanBDev/beanstalk-deploy@initial
         with:
-          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_access_key: ${{ secrets.ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.SECRET_ACCESS_KEY }}
           region: eu-central-1
           application_name: NexScore
           environment_name: Nexscore-env
