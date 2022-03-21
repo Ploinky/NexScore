@@ -33,7 +33,7 @@ public class PingTest {
 
     @Test
     public void testGreetingCustomMessage() throws Exception {
-        Ping response = new Ping("Yo, World!");
+        Ping response = new Ping("hi, World!");
         final String expectedResponseContent = objectMapper.writeValueAsString(response);
 
         mockMvc.perform(get("/ping?greeting=hi")).andDo(print()).andExpect(status().isOk())
