@@ -16,10 +16,10 @@ jobs:
       - name: Build with Gradle
         run: gradle build
       - name: Upload JAR
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: artifact
-          path: build/libs/tweet_scheduler-0.0.1-SNAPSHOT.jar   
+          path: build/libs/NexScoreApp-0.0.1-SNAPSHOT.jar   
       - name: Beanstalk Deploy for JAR
         uses: DylanBDev/beanstalk-deploy@initial
         with:
@@ -29,5 +29,5 @@ jobs:
           application_name: NexScore
           environment_name: Nexscore-env
           version_label: ${{github.SHA}}
-          deployment_package: NexScoreApp-0.0.1-SNAPSHOT.jar
+          deployment_package: build/libs/NexScoreApp-0.0.1-SNAPSHOT.jar
           use_existing_version_if_available: false
