@@ -30,4 +30,13 @@ public class PingTest {
         this.mockMvc.perform(get("/ping")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().json(expectedResponseContent));
     }
+
+    @Test
+    public void testGreetingCustomMessage() throws Exception {
+        Ping response = new Ping("Yo, World!");
+        final String expectedResponseContent = objectMapper.writeValueAsString(response);
+
+        this.mockMvc.perform(get("/ping?greeting=hi")).andDo(print()).andExpect(status().isOk())
+                .andExpect(content().json(expectedResponseContent));
+    }
 }
