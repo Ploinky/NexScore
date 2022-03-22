@@ -1,15 +1,18 @@
-# This is a basic workflow to help you get started with Actions
+name: Auto Assign to Project
 
-name: Issue automation
 on:
   issues:
-    types: [opened]
+    types: [opened, labeled]
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 jobs:
-  createCard:
+  assign_one_project:
     runs-on: ubuntu-latest
+    name: Assign to One Project
     steps:
-      - name: Create or Update Project Card
-        uses: peter-evans/create-or-update-project-card@v1
-        with:
-          project-name: NexScore
-          column-name: Icebox
+    - name: Assign NEW issues to project 1
+      uses: srggrs/assign-one-project-github-action@1.2.1
+      if: github.event.action == 'opened'
+      with:
+        project: 'https://github.com/Ploinky/NexScore/projects/1'
