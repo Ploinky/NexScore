@@ -15,9 +15,7 @@ on:
       
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 11
@@ -29,7 +27,10 @@ jobs:
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
       with:
         arguments: build
+  checkstyle:
+    runs-on: ubuntu-latest
+    steps:
     - name: Checkstyle for Java
-      uses: dbelyaev/action-checkstyle@v0.5.1
+    - uses: dbelyaev/action-checkstyle@v0.5.1
       with:
         fail_on_error: true
