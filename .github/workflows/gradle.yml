@@ -31,6 +31,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkstyle for Java
-    - uses: dbelyaev/action-checkstyle@v0.5.1
+      uses: dbelyaev/action-checkstyle@v0.5.1
       with:
         fail_on_error: true
