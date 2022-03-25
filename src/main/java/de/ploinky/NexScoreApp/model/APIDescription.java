@@ -1,4 +1,4 @@
-package de.ploinky.NexScoreApp;
+package de.ploinky.NexScoreApp.model;
 
 public class APIDescription {
         private final String name;
