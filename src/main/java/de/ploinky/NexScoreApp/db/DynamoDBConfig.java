@@ -19,6 +19,9 @@ import static com.amazonaws.regions.Regions.EU_CENTRAL_1;
 public class DynamoDBConfig {
     @Value("${amazon.dynamodb.endpoint}")
     private String amazonDynamoDBEndpoint;
+    
+    @Value("${amazon.dynamodb.region}")
+    private String amazonDynamoDBRegion;
 
     @Value("${amazon.aws.accesskey}")
     private String amazonAWSAccessKey;
@@ -26,12 +29,13 @@ public class DynamoDBConfig {
     @Value("${amazon.aws.secretkey}")
     private String amazonAWSSecretKey;
 
+
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {
         AmazonDynamoDBClientBuilder builder =
             AmazonDynamoDBClientBuilder
             .standard()
-            .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration("http://localhost:8000", "eu-central-1"))
+            .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(amazonDynamoDBEndpoint, amazonDynamoDBRegion))
             .withCredentials(amazonAWSCredentials());
 
         AmazonDynamoDB amazonDynamoDB = builder.build();
