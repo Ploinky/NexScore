@@ -1,4 +1,4 @@
-const { Stack, Duration, aws_dynamodb} = require('aws-cdk-lib');
+const { Stack, Duration, RemovalPolicy, aws_dynamodb} = require('aws-cdk-lib');
 const aws_elasticbeanstalk = require('aws-cdk-lib/aws-elasticbeanstalk');
 const iam = require('aws-cdk-lib/aws-iam');
 
@@ -44,10 +44,12 @@ class AwsCdkStack extends Stack {
     environment.addDependsOn(application);
 
     const playerTable = new aws_dynamodb.Table(this, 'Player', {
+      removalPolicy: RemovalPolicy.DESTROY,
       partitionKey: {name: 'puuid', type: aws_dynamodb.AttributeType.STRING}
     });
 
     const matchTable = new aws_dynamodb.Table(this, 'Match', {
+      removalPolicy: RemovalPolicy.DESTROY,
       partitionKey: {name: 'matchid', type: aws_dynamodb.AttributeType.STRING}
     });
 
