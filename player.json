@@ -1,0 +1,19 @@
+{
+    "TableName": "Player",
+    "KeySchema": [
+        {
+            "AttributeName": "puuid",
+            "KeyType": "HASH"
+        }
+    ],
+    "AttributeDefinitions": [
+        {
+            "AttributeName": "puuid",
+            "AttributeType": "S"
+        }
+    ],
+    "ProvisionedThroughput": {
+      "ReadCapacityUnits": 1,
+      "WriteCapacityUnits": 1
+    }
+}
