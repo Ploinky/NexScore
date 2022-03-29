@@ -108,8 +108,8 @@
           "WriteCapacityUnits": 5
         }
       },
-      "UpdateReplacePolicy": "Retain",
-      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
       "Metadata": {
         "aws:cdk:path": "AwsCdkStack/Player/Resource"
       }
@@ -134,8 +134,8 @@
           "WriteCapacityUnits": 5
         }
       },
-      "UpdateReplacePolicy": "Retain",
-      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
       "Metadata": {
         "aws:cdk:path": "AwsCdkStack/Match/Resource"
       }
