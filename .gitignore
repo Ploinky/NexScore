@@ -8,7 +8,6 @@
 aws-cdk/.elasticbeanstalk/*
 aws-cdk/!.elasticbeanstalk/*.cfg.yml
 aws-cdk/!.elasticbeanstalk/*.global.yml
-aws-cdk/bin
 aws-cdk/node_modules
 
 # other
