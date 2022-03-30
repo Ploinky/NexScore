@@ -15,10 +15,13 @@ jobs:
           node-version: 16.3
       - name: Run cdk deploy
         working-directory: ./aws-cdk
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
           npm install
           npm install -g aws-cdk
-          cdk deploy --profile github_action --require-approval never
+          cdk deploy --require-approval never
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
