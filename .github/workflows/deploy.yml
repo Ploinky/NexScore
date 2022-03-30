@@ -21,7 +21,7 @@ jobs:
         run: |
           npm install
           npm install -g aws-cdk
-          cdk bootstrap
+          cdk bootstrap '408959538248/eu-central-1'
           cdk deploy --require-approval never
       - name: Set up JDK
         uses: actions/setup-java@v1
