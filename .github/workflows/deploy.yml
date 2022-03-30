@@ -13,18 +13,12 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: '11'
-      - name: cdk deploy
-        uses: youyo/aws-cdk-github-actions@v2.1.1
+      - name: Deploy
+        uses: udondan/cdk-nodejs@v0.4.0
         with:
-          cdk_subcommand: 'deploy'
-          cdk_stack: 'AwsCdkStack'
-          cdk_args: '--require-approval never'
-          actions_comment: false
-          working_dir: './aws-cdk'
-        env:
           AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: 'eu-central-1'
+          SUBDIR: 'aws-cdk'
       - name: Build with Gradle
         run: gradle build
       - name: Upload JAR
