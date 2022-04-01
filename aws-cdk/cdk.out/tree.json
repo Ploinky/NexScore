@@ -115,7 +115,7 @@
                   {
                     "namespace": "aws:autoscaling:launchconfiguration",
                     "optionName": "InstanceType",
-                    "value": "t3.small"
+                    "value": "t2.micro"
                   },
                   {
                     "namespace": "aws:elasticbeanstalk:application:environment",
