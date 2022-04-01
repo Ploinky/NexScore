@@ -34,3 +34,45 @@ jobs:
       uses: dbelyaev/action-checkstyle@v0.5.1
       with:
         fail_on_error: true
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 16.3
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.3
+      - name: Run cdk deploy
+        working-directory: ./aws-cdk
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        run: |
+          npm install
+          npm install -g aws-cdk
+          cdk bootstrap '408959538248/eu-central-1'
+          cdk deploy --require-approval never
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Build with Gradle
+        run: gradle build
+      - name: Upload JAR
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact
+          path: build/libs/NexScoreApp-0.0.1-SNAPSHOT.jar   
+      - name: Beanstalk Deploy for JAR
+        uses: DylanBDev/beanstalk-deploy@initial
+        with:
+          aws_access_key: ${{ secrets.ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.SECRET_ACCESS_KEY }}
+          region: eu-central-1
+          application_name: NexScore
+          environment_name: Nexscore-env
+          version_label: ${{github.SHA}}
+          deployment_package: build/libs/NexScoreApp-0.0.1-SNAPSHOT.jar
+          use_existing_version_if_available: true
