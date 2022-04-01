@@ -20,6 +20,12 @@ class AwsCdkStack extends Stack {
       roles: [ebRole.roleName],
     });
 
+    role.addToPolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      resources: ['*'],
+      actions: ['elasticbeanstalk:PutInstanceStatistics']
+    }));
+
     const environment = new aws_elasticbeanstalk.CfnEnvironment(this, 'Environment', {
       environmentName: 'NexScore-env',
       applicationName: 'NexScore',
@@ -32,7 +38,7 @@ class AwsCdkStack extends Stack {
       {
         namespace: 'aws:autoscaling:launchconfiguration',
         optionName: 'InstanceType',
-        value: 't3.small'
+        value: 't2.micro'
       },
       {
         namespace: 'aws:elasticbeanstalk:application:environment',
