@@ -11,10 +11,18 @@ on:
   push:
     branches:
       - '*'
-      - '!main'
       
-jobs:
+jobs:        
+  checkstyle:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkstyle for Java
+      uses: dbelyaev/action-checkstyle@v0.5.1
+      with:
+        fail_on_error: true
+        
   build:
+    needs: checkstyle
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -27,10 +35,47 @@ jobs:
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
       with:
         arguments: build
-  checkstyle:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkstyle for Java
-      uses: dbelyaev/action-checkstyle@v0.5.1
+    - name: Archive code coverage results
+      if: github.ref == 'refs/heads/main'
+      uses: actions/upload-artifact@v3
       with:
-        fail_on_error: true
+        name: jar
+        path: build/libs/NexScoreApp-0.0.1-SNAPSHOT.jar
+        retention-days: 1
+        
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js 16.3
+        uses: actions/setup-node@v2
+        with:
+          node-version: 16.3
+      - name: Run cdk deploy
+        working-directory: ./aws-cdk
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        run: |
+          npm install
+          npm install -g aws-cdk
+          cdk bootstrap '408959538248/eu-central-1'
+          cdk deploy --require-approval never
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: jar
+      - name: Beanstalk Deploy for JAR
+        uses: DylanBDev/beanstalk-deploy@initial
+        with:
+          aws_access_key: ${{ secrets.ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.SECRET_ACCESS_KEY }}
+          region: eu-central-1
+          application_name: NexScore
+          environment_name: Nexscore-env
+          version_label: ${{github.SHA}}
+          deployment_package: NexScoreApp-0.0.1-SNAPSHOT.jar
+          use_existing_version_if_available: true
