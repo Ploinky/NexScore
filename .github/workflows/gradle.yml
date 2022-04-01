@@ -36,12 +36,12 @@ jobs:
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
       with:
         arguments: build
-    - name: Cache jar files
-      id: cache-jar
-      uses: actions/cache@v3
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v3
       with:
+        name: jar
         path: build/libs/NexScoreApp-0.0.1-SNAPSHOT.jar
-        key: ${{ runner.os }}-jar
+        retention-days: 1
         
   deploy:
     needs: build
@@ -64,6 +64,10 @@ jobs:
           npm install -g aws-cdk
           cdk bootstrap '408959538248/eu-central-1'
           cdk deploy --require-approval never
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: jar
       - name: Beanstalk Deploy for JAR
         uses: DylanBDev/beanstalk-deploy@initial
         with:
