@@ -12,8 +12,22 @@ on:
     branches:
       - '*'
       
-jobs:
+jobs:        
+  checkstyle:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkstyle for Java
+      uses: dbelyaev/action-checkstyle@v0.5.1
+      with:
+        fail_on_error: true
+    - name: Upload JAR
+      uses: actions/upload-artifact@v3
+      with:
+        name: artifact
+        path: build/libs/NexScoreApp-0.0.1-SNAPSHOT.jar   
+        
   build:
+    needs: checkstyle
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -23,17 +37,13 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
     - name: Build with Gradle
+      if: github.ref == 'refs/heads/main'
       uses: gradle/gradle-build-action@937999e9cc2425eddc7fd62d1053baf041147db7
       with:
         arguments: build
-  checkstyle:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkstyle for Java
-      uses: dbelyaev/action-checkstyle@v0.5.1
-      with:
-        fail_on_error: true
+        
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
@@ -53,17 +63,6 @@ jobs:
           npm install -g aws-cdk
           cdk bootstrap '408959538248/eu-central-1'
           cdk deploy --require-approval never
-      - name: Set up JDK
-        uses: actions/setup-java@v1
-        with:
-          java-version: '11'
-      - name: Build with Gradle
-        run: gradle build
-      - name: Upload JAR
-        uses: actions/upload-artifact@v3
-        with:
-          name: artifact
-          path: build/libs/NexScoreApp-0.0.1-SNAPSHOT.jar   
       - name: Beanstalk Deploy for JAR
         uses: DylanBDev/beanstalk-deploy@initial
         with:
