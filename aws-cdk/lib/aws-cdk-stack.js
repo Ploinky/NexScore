@@ -20,7 +20,7 @@ class AwsCdkStack extends Stack {
       roles: [ebRole.roleName],
     });
 
-    role.addToPolicy(new iam.PolicyStatement({
+    ebRole.addToPolicy(new iam.PolicyStatement({
       effect: iam.Effect.ALLOW,
       resources: ['*'],
       actions: ['elasticbeanstalk:PutInstanceStatistics']
