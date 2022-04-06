@@ -1,4 +1,4 @@
-package de.ploinky.NexScoreApp.db;
+package de.ploinky.NexScoreApp;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableDynamoDBRepositories(basePackages = "de.ploinky.NexScoreApp.db.repositories")
+@EnableDynamoDBRepositories(basePackages = "de.ploinky.NexScoreApp.repositories")
 public class DynamoDBConfig {
     @Value("${amazon.dynamodb.endpoint}")
     private String amazonDynamoDBEndpoint;
@@ -25,7 +25,6 @@ public class DynamoDBConfig {
 
     @Value("${amazon.aws.secretkey}")
     private String amazonAWSSecretKey;
-
 
     @Bean
     public AmazonDynamoDB amazonDynamoDB() {

@@ -44,6 +44,11 @@ class AwsCdkStack extends Stack {
         namespace: 'aws:elasticbeanstalk:application:environment',
         optionName: 'SERVER_PORT',
         value: '5000'
+      },,
+      {
+        namespace: 'aws:elasticbeanstalk:application:environment',
+        optionName: 'DYNAMODB_ENDPOINT',
+        value: 'https://dynamodb.eu-central-1.amazonaws.com'
       }]
     });
 
@@ -51,14 +56,19 @@ class AwsCdkStack extends Stack {
 
     const playerTable = new aws_dynamodb.Table(this, 'Player', {
       removalPolicy: RemovalPolicy.DESTROY,
-      partitionKey: {name: 'puuid', type: aws_dynamodb.AttributeType.STRING}
+      partitionKey: {name: 'name', type: aws_dynamodb.AttributeType.STRING},
+      tableName: 'Player'
     });
+
+    playerTable.grantReadWriteData(ebRole);
 
     const matchTable = new aws_dynamodb.Table(this, 'Match', {
       removalPolicy: RemovalPolicy.DESTROY,
-      partitionKey: {name: 'matchid', type: aws_dynamodb.AttributeType.STRING}
+      partitionKey: {name: 'matchid', type: aws_dynamodb.AttributeType.STRING},
+      tableName: 'Match'
     });
 
+    matchTable.grantReadWriteData(ebRole);
 
   };
 }
