@@ -7,6 +7,7 @@ import de.ploinky.NexScoreApp.model.Player;
 import de.ploinky.NexScoreApp.service.PlayerService;
 
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,8 +55,8 @@ public class PlayerTest {
     @Autowired
     private AmazonDynamoDB amazonDynamoDB;
 
-    @BeforeEach
-    public void before() {
+    @BeforeAll
+    public static void before(@Autowired AmazonDynamoDB amazonDynamoDB) {
         amazonDynamoDB.createTable(
                 new CreateTableRequest(Arrays.asList(new AttributeDefinition("name", "S")),
                         "Player",
