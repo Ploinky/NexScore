@@ -1,4 +1,4 @@
-package de.ploinky.NexScoreApp;
+package de.ploinky.NexScoreApp.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.ploinky.NexScoreApp.model.Ping;
