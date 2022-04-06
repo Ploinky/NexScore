@@ -57,9 +57,9 @@ public class PlayerTest {
     @BeforeEach
     public void before() {
         amazonDynamoDB.createTable(
-                new CreateTableRequest(Arrays.asList(new AttributeDefinition("puuid", "S")),
+                new CreateTableRequest(Arrays.asList(new AttributeDefinition("name", "S")),
                         "Player",
-                        Arrays.asList(new KeySchemaElement("puuid", KeyType.HASH)),
+                        Arrays.asList(new KeySchemaElement("name", KeyType.HASH)),
                         new ProvisionedThroughput(1L, 1L))
         );
     }
@@ -67,7 +67,6 @@ public class PlayerTest {
     @Test
     public void testPlayerPost() throws Exception {
         Player response = new Player("Hello, World!");
-        response.setPuuid("001");
         final String expectedResponseContent = objectMapper.writeValueAsString(response);
 
         playerService.createPlayer(response);

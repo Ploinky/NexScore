@@ -56,7 +56,7 @@ class AwsCdkStack extends Stack {
 
     const playerTable = new aws_dynamodb.Table(this, 'Player', {
       removalPolicy: RemovalPolicy.DESTROY,
-      partitionKey: {name: 'puuid', type: aws_dynamodb.AttributeType.STRING},
+      partitionKey: {name: 'name', type: aws_dynamodb.AttributeType.STRING},
       tableName: 'Player'
     });
 

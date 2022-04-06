@@ -17,7 +17,6 @@ public class PlayerController {
     public Player postPlayer(@RequestParam(value="name") String name) {
         Player player = new Player();
         player.setName(name);
-        player.setPuuid("puuid001");
         playerService.createPlayer(player);
         return player;
     }
