@@ -15,10 +15,14 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	
+
+	testImplementation 'org.testcontainers:testcontainers:1.16.3'
+	testImplementation 'org.testcontainers:junit-jupiter:1.16.3'
+
 	implementation group: 'org.springframework.data', name: 'spring-data-releasetrain', version: 'Lovelace-SR16', ext: 'pom'
 	implementation group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.12.186'
 	implementation 'io.github.boostchicken:spring-data-dynamodb:5.2.5'
+
 }
 
 tasks.named('test') {

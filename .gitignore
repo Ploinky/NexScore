@@ -4,11 +4,15 @@
 # Intellij
 .idea/
 
+# VS Code
+.vscode
+
 # AWS
 aws-cdk/.elasticbeanstalk/*
 aws-cdk/!.elasticbeanstalk/*.cfg.yml
 aws-cdk/!.elasticbeanstalk/*.global.yml
 aws-cdk/node_modules
+aws-cdk/cdk.out
 
 # other
 build/
