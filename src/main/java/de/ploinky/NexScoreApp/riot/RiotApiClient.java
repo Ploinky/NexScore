@@ -1,7 +1,7 @@
 package de.ploinky.NexScoreApp.riot;
 
-import de.ploinky.NexScoreApp.exception.PlayerCreationFailedException;
-import de.ploinky.NexScoreApp.exception.PlayerCreationFailedSummonerDoesNotExistException;
+import de.ploinky.NexScoreApp.exception.ExternalAPIErrorException;
+import de.ploinky.NexScoreApp.exception.SummonerDoesNotExistException;
 import de.ploinky.NexScoreApp.model.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,9 +32,9 @@ public class RiotApiClient {
                 .onErrorMap(WebClientResponseException.class, e -> {
                         HttpStatus status = e.getStatusCode();
                         if(status == HttpStatus.valueOf(404)) {
-                            return new PlayerCreationFailedSummonerDoesNotExistException();
+                            return new SummonerDoesNotExistException();
                         } else {
-                            return new PlayerCreationFailedException();
+                            return new ExternalAPIErrorException();
                         }
                 })
                 .blockOptional();
