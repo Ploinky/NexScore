@@ -25,7 +25,8 @@ public class PlayerControllerTest extends DbIntegrationTest {
 
     @Test
     public void testPlayerPost() throws Exception {
-        Player player = new Player("PlayerName");
+        Player player = new Player("Ploinky");
+        player.setPuuid("HjZfChmcAk0kGs3j6_C0s1WiFU5Ypd4-T9zTfqHsGCb5z-0Hu1V0f9CAsoKsfeLoNlzqSFPgnISAmQ");
         final String expectedResponseContent = objectMapper.writeValueAsString(player);
 
         mockMvc.perform(post("/player?name=" + player.getName()))
@@ -55,5 +56,15 @@ public class PlayerControllerTest extends DbIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(status().reason("Player already exists"));
+    }
+
+    @Test
+    public void testPlayerPostPlayerDoesNotExist() throws Exception {
+        Player player = new Player("1");
+
+        mockMvc.perform(post("/player?name=" + player.getName()))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(status().reason("Summoner does not exist"));
     }
 }

@@ -27,7 +27,8 @@ public class RootTest {
         APIDescription response = new APIDescription();
         final String expectedResponseContent = objectMapper.writeValueAsString(response);
 
-        mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk())
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponseContent));
     }
 }

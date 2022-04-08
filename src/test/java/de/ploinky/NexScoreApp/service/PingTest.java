@@ -27,7 +27,8 @@ public class PingTest {
         Ping response = new Ping("Hello, World!");
         final String expectedResponseContent = objectMapper.writeValueAsString(response);
 
-        mockMvc.perform(get("/ping")).andDo(print()).andExpect(status().isOk())
+        mockMvc.perform(get("/ping"))
+                .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponseContent));
     }
 
@@ -36,7 +37,8 @@ public class PingTest {
         Ping response = new Ping("hi, World!");
         final String expectedResponseContent = objectMapper.writeValueAsString(response);
 
-        mockMvc.perform(get("/ping?greeting=hi")).andDo(print()).andExpect(status().isOk())
+        mockMvc.perform(get("/ping?greeting=hi"))
+                .andExpect(status().isOk())
                 .andExpect(content().json(expectedResponseContent));
     }
 }
