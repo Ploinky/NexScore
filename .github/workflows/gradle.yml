@@ -35,7 +35,7 @@ jobs:
       uses: gradle/gradle-build-action@v2
       with:
         arguments: build
-          --debug
+          --info
     - name: Archive code coverage results
       if: github.ref == 'refs/heads/main'
       uses: actions/upload-artifact@v3
