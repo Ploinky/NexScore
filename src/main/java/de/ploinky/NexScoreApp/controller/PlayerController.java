@@ -15,9 +15,6 @@ public class PlayerController {
 
     @PostMapping("/player")
     public Player postPlayer(@RequestParam(value="name") String name) {
-        Player player = new Player();
-        player.setName(name);
-        playerService.createPlayer(player);
-        return player;
+        return playerService.createPlayer(name);
     }
 }
