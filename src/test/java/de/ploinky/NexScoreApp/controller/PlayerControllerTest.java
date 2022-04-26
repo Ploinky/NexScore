@@ -3,28 +3,24 @@ package de.ploinky.NexScoreApp.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import de.ploinky.NexScoreApp.DbIntegrationTest;
 import de.ploinky.NexScoreApp.NexScoreAppApplication;
+import de.ploinky.NexScoreApp.TestConfig;
 import de.ploinky.NexScoreApp.model.Player;
 
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
+
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.IOException;
 
@@ -39,9 +35,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // Enable overriding webclient bean
 @TestPropertySource(properties = {"spring.main.allow-bean-definition-overriding=true"})
 // Override webclient bean with test bean
-@ContextConfiguration(classes = {NexScoreAppApplication.class, PlayerControllerTest.TestConfig.class})
+@ContextConfiguration(classes = {NexScoreAppApplication.class, TestConfig.class})
 public class PlayerControllerTest extends DbIntegrationTest {
-    @Autowired
     public static MockWebServer mockServer;
 
     @Autowired
@@ -50,24 +45,9 @@ public class PlayerControllerTest extends DbIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @BeforeAll
-    static void beforeAll() throws IOException {
-        mockServer.start();
-    }
-
     @AfterAll
     static void afterAll() throws IOException {
         mockServer.shutdown();
-    }
-
-    @TestConfiguration
-    public class TestConfig {
-        @Bean(name = "webClient")
-        WebClient test() {
-            HttpUrl url = mockServer.url("/");
-            WebClient webClient = WebClient.create(url.toString());
-            return webClient;
-        }
     }
 
     private void mockBackendEndpoint(int responseCode, String body) {
@@ -104,6 +84,8 @@ public class PlayerControllerTest extends DbIntegrationTest {
         Player player = new Player("PlayerName1");
         final String expectedResponseContent = objectMapper.writeValueAsString(player);
 
+        mockBackendEndpoint(200, expectedResponseContent);
+
         mockMvc.perform(post("/player?name=" + player.getName()))
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -117,6 +99,8 @@ public class PlayerControllerTest extends DbIntegrationTest {
     @Test
     public void testPlayerPostPlayerDoesNotExist() throws Exception {
         Player player = new Player("1");
+
+        mockBackendEndpoint(404, "Summoner does not exist");
 
         mockMvc.perform(post("/player?name=" + player.getName()))
                 .andDo(print())
