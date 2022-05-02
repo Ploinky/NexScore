@@ -35,7 +35,7 @@ public class DbIntegrationTest {
     }
 
     @Autowired
-    private AmazonDynamoDB amazonDynamoDB;
+    protected AmazonDynamoDB amazonDynamoDB;
 
     @BeforeAll
     public static void before(@Autowired AmazonDynamoDB amazonDynamoDB) {

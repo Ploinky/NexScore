@@ -5,6 +5,9 @@ import org.springframework.data.repository.CrudRepository;
 
 import de.ploinky.NexScoreApp.model.Player;
 
+import java.util.List;
+
 @EnableScan
 public interface PlayerRepository  extends CrudRepository<Player, String> {
+    List<Player> findAll();
 }

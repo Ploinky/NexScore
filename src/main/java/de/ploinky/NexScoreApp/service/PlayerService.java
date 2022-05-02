@@ -10,6 +10,7 @@ import de.ploinky.NexScoreApp.riot.RiotApiClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -29,11 +30,20 @@ public class PlayerService {
             throw new PlayerCreationFailedDuplicateException();
         }
 
-        Player rp = riotApiClient.getPlayerBySummonerName(name)
+        Player player = riotApiClient.getPlayerBySummonerName(name)
+                .map(rp -> {
+                    Player p = new Player(rp.getName());
+                    p.setPuuid(rp.getPuuid());
+                    return p;
+                })
                 .orElseThrow(() -> new ExternalAPIErrorException());
 
-        playerRepository.save(rp);
+        playerRepository.save(player);
 
-        return rp;
+        return player;
+    }
+
+    public List<Player> getPlayers() {
+        return playerRepository.findAll();
     }
 }
