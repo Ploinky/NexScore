@@ -80,10 +80,10 @@ public class PlayerControllerTest extends DbIntegrationTest {
     public void testPlayerPost() throws Exception {
         RiotApiClientPlayer riotPlayer = new RiotApiClientPlayer();
         riotPlayer.setName("Ploinky");
-        riotPlayer.setPuuid("HjZfChmcAk0kGs3j6_C0s1WiFU5Ypd4-T9zTfqHsGCb5z-0Hu1V0f9CAsoKsfeLoNlzqSFPgnISAmQ");
+        riotPlayer.setPuuid("puuid");
 
         Player player = new Player("Ploinky");
-        player.setPuuid("HjZfChmcAk0kGs3j6_C0s1WiFU5Ypd4-T9zTfqHsGCb5z-0Hu1V0f9CAsoKsfeLoNlzqSFPgnISAmQ");
+        player.setPuuid("puuid");
 
         mockBackendEndpoint(200, objectMapper.writeValueAsString(riotPlayer));
 
@@ -105,10 +105,10 @@ public class PlayerControllerTest extends DbIntegrationTest {
     public void testPlayerPostDuplicateName() throws Exception {
         RiotApiClientPlayer riotPlayer = new RiotApiClientPlayer();
         riotPlayer.setName("PlayerName1");
-        riotPlayer.setPuuid("ivnbOJfWlfkLdDS81Z9zOAX3a2UyXubWhZp8vrhgx3fzA-rbDGUZFfaLFWwjuQLzGpjPHZDdw7OYvA");
+        riotPlayer.setPuuid("test-puuid");
 
         Player player = new Player("PlayerName1");
-        player.setPuuid("ivnbOJfWlfkLdDS81Z9zOAX3a2UyXubWhZp8vrhgx3fzA-rbDGUZFfaLFWwjuQLzGpjPHZDdw7OYvA");
+        player.setPuuid("test-puuid");
 
         mockBackendEndpoint(200, objectMapper.writeValueAsString(riotPlayer));
 
