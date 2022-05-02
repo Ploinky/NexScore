@@ -5,7 +5,6 @@ import de.ploinky.NexScoreApp.exception.SummonerDoesNotExistException;
 import de.ploinky.NexScoreApp.model.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,10 +20,10 @@ public class RiotApiClient {
     @Value("${riot.api.key}")
     private String riotApiKey;
 
-    public Optional<Player> getPlayerBySummonerName(String name) {
+    public Optional<RiotApiClientPlayer> getPlayerBySummonerName(String name) {
         return webClient.get().uri("/lol/summoner/v4/summoners/by-name/{name}?api_key={riotApiKey}", name, riotApiKey)
                 .retrieve()
-                .bodyToMono(Player.class)
+                .bodyToMono(RiotApiClientPlayer.class)
                 .onErrorMap(WebClientResponseException.class, e -> {
                         HttpStatus status = e.getStatusCode();
                         if(status == HttpStatus.valueOf(404)) {

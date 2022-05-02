@@ -1,4 +1,4 @@
-const { Stack, Duration, RemovalPolicy, aws_dynamodb} = require('aws-cdk-lib');
+const { Stack, RemovalPolicy, aws_dynamodb} = require('aws-cdk-lib');
 const aws_elasticbeanstalk = require('aws-cdk-lib/aws-elasticbeanstalk');
 const iam = require('aws-cdk-lib/aws-iam');
 

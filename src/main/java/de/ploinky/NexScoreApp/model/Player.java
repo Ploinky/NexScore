@@ -9,7 +9,9 @@ public class Player {
     private String puuid;
 
     public Player() {
-        this("");
+        // Empty constructor for DynamoDB
+        this.name = "";
+        this.puuid = "";
     }
 
     public Player(String name) {
