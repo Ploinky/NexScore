@@ -1,4 +1,4 @@
-package de.ploinky.NexScoreApp.model;
+package de.ploinky.nexscore.model;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;

@@ -1,6 +1,6 @@
-package de.ploinky.NexScoreApp;
+package de.ploinky.nexscore;
 
-import de.ploinky.NexScoreApp.controller.PlayerControllerTest;
+import de.ploinky.nexscore.controller.PlayerControllerTest;
 import okhttp3.HttpUrl;
 import okhttp3.mockwebserver.MockWebServer;
 import org.springframework.boot.test.context.TestConfiguration;

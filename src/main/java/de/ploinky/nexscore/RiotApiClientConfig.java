@@ -1,4 +1,4 @@
-package de.ploinky.NexScoreApp;
+package de.ploinky.nexscore;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

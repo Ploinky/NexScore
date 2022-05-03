@@ -1,4 +1,4 @@
-package de.ploinky.NexScoreApp;
+package de.ploinky.nexscore;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.model.*;

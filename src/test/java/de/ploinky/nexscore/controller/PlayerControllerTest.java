@@ -1,13 +1,13 @@
-package de.ploinky.NexScoreApp.controller;
+package de.ploinky.nexscore.controller;
 
 import com.amazonaws.services.dynamodbv2.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.ploinky.NexScoreApp.DbIntegrationTest;
-import de.ploinky.NexScoreApp.NexScoreAppApplication;
-import de.ploinky.NexScoreApp.TestConfig;
-import de.ploinky.NexScoreApp.model.Player;
+import de.ploinky.nexscore.DbIntegrationTest;
+import de.ploinky.nexscore.NexScoreAppApplication;
+import de.ploinky.nexscore.TestConfig;
+import de.ploinky.nexscore.model.Player;
 
-import de.ploinky.NexScoreApp.riot.RiotApiClientPlayer;
+import de.ploinky.nexscore.riot.RiotApiClientPlayer;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.BeforeEach;

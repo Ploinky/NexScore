@@ -1,4 +1,4 @@
-package de.ploinky.NexScoreApp;
+package de.ploinky.nexscore;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSCredentialsProvider;

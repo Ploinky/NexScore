@@ -1,4 +1,4 @@
-package de.ploinky.NexScoreApp.controller;
+package de.ploinky.nexscore.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import de.ploinky.NexScoreApp.model.Player;
-import de.ploinky.NexScoreApp.service.PlayerService;
+import de.ploinky.nexscore.model.Player;
+import de.ploinky.nexscore.service.PlayerService;
 
 import java.util.List;
 

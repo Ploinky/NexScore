@@ -1,8 +1,7 @@
-package de.ploinky.NexScoreApp.riot;
+package de.ploinky.nexscore.riot;
 
-import de.ploinky.NexScoreApp.exception.ExternalAPIErrorException;
-import de.ploinky.NexScoreApp.exception.SummonerDoesNotExistException;
-import de.ploinky.NexScoreApp.model.Player;
+import de.ploinky.nexscore.exception.ExternalAPIErrorException;
+import de.ploinky.nexscore.exception.SummonerDoesNotExistException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

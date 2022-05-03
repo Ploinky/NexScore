@@ -1,6 +1,6 @@
-package de.ploinky.NexScoreApp.controller;
+package de.ploinky.nexscore.controller;
 
-import de.ploinky.NexScoreApp.model.APIDescription;
+import de.ploinky.nexscore.model.APIDescription;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 

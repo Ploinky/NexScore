@@ -1,4 +1,4 @@
-package de.ploinky.NexScoreApp;
+package de.ploinky.nexscore;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

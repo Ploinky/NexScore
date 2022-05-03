@@ -1,4 +1,4 @@
-package de.ploinky.NexScoreApp.exception;
+package de.ploinky.nexscore.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

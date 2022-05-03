@@ -1,4 +1,4 @@
-package de.ploinky.NexScoreApp.riot;
+package de.ploinky.nexscore.riot;
 
 public class RiotApiClientPlayer {
     private String id;
