@@ -1,39 +1,40 @@
 package de.ploinky.nexscore.controller;
 
-import com.amazonaws.services.dynamodbv2.model.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import de.ploinky.nexscore.DbIntegrationTest;
-import de.ploinky.nexscore.NexScoreAppApplication;
-import de.ploinky.nexscore.TestConfig;
-import de.ploinky.nexscore.model.Player;
-
-import de.ploinky.nexscore.riot.RiotApiClientPlayer;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.servlet.MockMvc;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
+import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
+import com.amazonaws.services.dynamodbv2.model.KeyType;
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import de.ploinky.nexscore.DbIntegrationTest;
+import de.ploinky.nexscore.NexScoreAppApplication;
+import de.ploinky.nexscore.TestConfig;
+import de.ploinky.nexscore.model.Player;
+import de.ploinky.nexscore.riot.RiotApiClientPlayer;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest
@@ -54,8 +55,8 @@ public class PlayerControllerTest extends DbIntegrationTest {
 
     @BeforeEach
     public void before() {
-        amazonDynamoDB.deleteTable("Player");
-        amazonDynamoDB.createTable(
+        amazonDynamoDb.deleteTable("Player");
+        amazonDynamoDb.createTable(
                 new CreateTableRequest(Arrays.asList(new AttributeDefinition("name", "S")),
                         "Player",
                         Arrays.asList(new KeySchemaElement("name", KeyType.HASH)),
@@ -98,7 +99,9 @@ public class PlayerControllerTest extends DbIntegrationTest {
         mockMvc.perform(post("/player"))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(status().reason("Required request parameter 'name' for method parameter type String is not present"));
+                .andExpect(status()
+                    .reason("Required request parameter 'name' for"
+                        + " method parameter type String is not present"));
     }
 
     @Test

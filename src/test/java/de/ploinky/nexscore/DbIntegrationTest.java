@@ -1,7 +1,12 @@
 package de.ploinky.nexscore;
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.model.*;
+import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
+import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.dynamodbv2.model.KeySchemaElement;
+import com.amazonaws.services.dynamodbv2.model.KeyType;
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import java.util.Arrays;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -12,10 +17,9 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.Arrays;
 
 @Testcontainers
-@ContextConfiguration(initializers = DbIntegrationTest.DynamoDBInitializer.class)
+@ContextConfiguration(initializers = DbIntegrationTest.DynamoDbInitializer.class)
 public class DbIntegrationTest {
     private static final int DYNAMODB_PORT = 8000;
 
@@ -24,22 +28,23 @@ public class DbIntegrationTest {
             .withExposedPorts(DYNAMODB_PORT);
 
 
-    public static class DynamoDBInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+    public static class DynamoDbInitializer
+            implements ApplicationContextInitializer<ConfigurableApplicationContext> {
         @Override
         public void initialize(ConfigurableApplicationContext ctx) {
             TestPropertyValues.of(
-                            String.format("amazon.dynamodb.endpoint: http://%s:%s",
-                                    dynamodb.getContainerIpAddress(), dynamodb.getMappedPort(DYNAMODB_PORT)))
-                    .applyTo(ctx);
+                String.format("amazon.dynamodb.endpoint: http://%s:%s",
+                    dynamodb.getContainerIpAddress(), dynamodb.getMappedPort(DYNAMODB_PORT)))
+                .applyTo(ctx);
         }
     }
 
     @Autowired
-    protected AmazonDynamoDB amazonDynamoDB;
+    protected AmazonDynamoDB amazonDynamoDb;
 
     @BeforeAll
-    public static void before(@Autowired AmazonDynamoDB amazonDynamoDB) {
-        amazonDynamoDB.createTable(
+    public static void before(@Autowired AmazonDynamoDB amazonDynamoDb) {
+        amazonDynamoDb.createTable(
                 new CreateTableRequest(Arrays.asList(new AttributeDefinition("name", "S")),
                         "Player",
                         Arrays.asList(new KeySchemaElement("name", KeyType.HASH)),

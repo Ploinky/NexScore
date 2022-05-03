@@ -11,9 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Configuration class for DynamoDB connection.
- */
 @Configuration
 @EnableDynamoDBRepositories(basePackages = "de.ploinky.nexscore.repository")
 public class DynamoDbConfig {
@@ -28,9 +25,10 @@ public class DynamoDbConfig {
 
     @Value("${amazon.aws.secretkey}")
     private String amazonAwsSecretKey;
-
+    //CHECKSTYLE:OFF
     @Bean
-    public AmazonDynamoDB amazonDynamoDb() {
+    public AmazonDynamoDB amazonDynamoDB() {
+        //CHECKSTYLE:ON
         AmazonDynamoDBClientBuilder builder =
             AmazonDynamoDBClientBuilder
             .standard()
