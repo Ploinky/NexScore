@@ -1,7 +1,7 @@
 package de.ploinky.nexscore;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import de.ploinky.nexscore.model.APIDescription;
+import de.ploinky.nexscore.model.ApiDescription;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,7 +24,7 @@ public class RootTest {
 
     @Test
     public void testRoot() throws Exception {
-        APIDescription response = new APIDescription();
+        ApiDescription response = new ApiDescription();
         final String expectedResponseContent = objectMapper.writeValueAsString(response);
 
         mockMvc.perform(get("/"))

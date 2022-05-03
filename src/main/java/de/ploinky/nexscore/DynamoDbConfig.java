@@ -11,40 +11,45 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Configuration class for DynamoDB connection.
+ */
 @Configuration
 @EnableDynamoDBRepositories(basePackages = "de.ploinky.nexscore.repository")
-public class DynamoDBConfig {
+public class DynamoDbConfig {
     @Value("${amazon.dynamodb.endpoint}")
-    private String amazonDynamoDBEndpoint;
+    private String amazonDynamoDbEndpoint;
     
     @Value("${amazon.dynamodb.region}")
-    private String amazonDynamoDBRegion;
+    private String amazonDynamoDbRegion;
 
     @Value("${amazon.aws.accesskey}")
-    private String amazonAWSAccessKey;
+    private String amazonAwsAccessKey;
 
     @Value("${amazon.aws.secretkey}")
-    private String amazonAWSSecretKey;
+    private String amazonAwsSecretKey;
 
     @Bean
-    public AmazonDynamoDB amazonDynamoDB() {
+    public AmazonDynamoDB amazonDynamoDb() {
         AmazonDynamoDBClientBuilder builder =
             AmazonDynamoDBClientBuilder
             .standard()
-            .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(amazonDynamoDBEndpoint, amazonDynamoDBRegion))
-            .withCredentials(amazonAWSCredentials());
+            .withEndpointConfiguration(
+                    new AwsClientBuilder.EndpointConfiguration(
+                            amazonDynamoDbEndpoint, amazonDynamoDbRegion))
+            .withCredentials(amazonAwsCredentials());
 
-        AmazonDynamoDB amazonDynamoDB = builder.build();
+        AmazonDynamoDB amazonDynamoDb = builder.build();
 
-        return amazonDynamoDB;
+        return amazonDynamoDb;
     }
 
     @Bean
-    public AWSCredentialsProvider amazonAWSCredentials() {
+    public AWSCredentialsProvider amazonAwsCredentials() {
         return new AWSCredentialsProvider() {
             @Override
             public AWSCredentials getCredentials() {
-                return new BasicAWSCredentials(amazonAWSAccessKey, amazonAWSSecretKey);
+                return new BasicAWSCredentials(amazonAwsAccessKey, amazonAwsSecretKey);
             }
 
             @Override
