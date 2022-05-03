@@ -1,3 +1,6 @@
+[![CI](https://github.com/Ploinky/NexScore/actions/workflows/gradle.yml/badge.svg)](https://github.com/Ploinky/NexScore/actions/workflows/gradle.yml)
+
+
 # NexScore
 Nexus last hit counter for League of Legends
 
