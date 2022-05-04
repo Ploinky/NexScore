@@ -24,10 +24,6 @@ public class PlayerService {
             throw new PlayerCreationFailedNoNameException();
         }
 
-        if (playerRepository.existsById(name)) {
-            throw new PlayerCreationFailedDuplicateException();
-        }
-
         Player player = riotApiClient.getPlayerBySummonerName(name)
             .map(rp -> {
                 Player p = new Player(rp.getName());
@@ -35,6 +31,10 @@ public class PlayerService {
                 return p;
             })
             .orElseThrow(() -> new ExternalApiErrorException());
+
+        if (playerRepository.existsById(player.getPuuid())) {
+            throw new PlayerCreationFailedDuplicateException();
+        }
 
         playerRepository.save(player);
 

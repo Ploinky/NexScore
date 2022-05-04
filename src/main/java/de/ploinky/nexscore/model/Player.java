@@ -20,7 +20,7 @@ public class Player {
         this.puuid = "";
     }
 
-    @DynamoDBHashKey(attributeName = "name")
+    @DynamoDBAttribute(attributeName = "name")
     public String getName() {
         return name;
     }
@@ -29,7 +29,7 @@ public class Player {
         this.name = name;
     }
 
-    @DynamoDBAttribute(attributeName = "puuid")
+    @DynamoDBHashKey(attributeName = "puuid")
     public String getPuuid() {
         return puuid;
     }

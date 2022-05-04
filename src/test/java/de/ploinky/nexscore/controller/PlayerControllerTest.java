@@ -57,9 +57,9 @@ public class PlayerControllerTest extends DbIntegrationTest {
     public void before() {
         amazonDynamoDb.deleteTable("Player");
         amazonDynamoDb.createTable(
-                new CreateTableRequest(Arrays.asList(new AttributeDefinition("name", "S")),
+                new CreateTableRequest(Arrays.asList(new AttributeDefinition("puuid", "S")),
                         "Player",
-                        Arrays.asList(new KeySchemaElement("name", KeyType.HASH)),
+                        Arrays.asList(new KeySchemaElement("puuid", KeyType.HASH)),
                         new ProvisionedThroughput(1L, 1L))
         );
     }
@@ -119,6 +119,8 @@ public class PlayerControllerTest extends DbIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(player)));
+
+        mockBackendEndpoint(200, objectMapper.writeValueAsString(riotPlayer));
 
         mockMvc.perform(post("/player?name=" + player.getName()))
                 .andDo(print())
