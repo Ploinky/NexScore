@@ -12,7 +12,7 @@ But why would I need such a statistic I hear you say? Well you really don't.
 Runs on Java 11, using Gradle.
 
 # Official instance
-Hosted using AWS Elastic Beanstalk on http://nexscore-env.eba-dgagbaqb.eu-central-1.elasticbeanstalk.com/.
+Hosted using AWS Elastic Beanstalk on http://nexscore-env.eba-3z3vn5cc.eu-central-1.elasticbeanstalk.com/.
 
 # API Endpoints
 | Endpoint | Information | Parameters |
