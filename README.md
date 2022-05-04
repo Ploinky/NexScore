@@ -3,17 +3,20 @@
 # NexScore
 Nexus last hit counter for League of Legends
 
-Keeps a statistic showing in how many games League of Legends players have last hit the opponents Nexus.
+Keeps a statistic showing in how many of their games League of Legends players have last hit the opponents Nexus.
 Only statistics for registered players will be kept, starting from the time they are registered.
+
+But why would I need such a statistic I hear you say? Well you really don't.
 
 # Install
 Runs on Java 11, using Gradle.
 
 # Official instance
-Hosted using AWS Elastic Beanstalk on http://nexscore-env.eba-prnmp5zi.eu-central-1.elasticbeanstalk.com/.
+Hosted using AWS Elastic Beanstalk on http://nexscore-env.eba-dgagbaqb.eu-central-1.elasticbeanstalk.com/.
 
 # API Endpoints
 | Endpoint | Information | Parameters |
 | - |:-:| - |
 | / | Shows information on the API | N/A |
-| /greeting | Shows a generic greeting | <ul><li>*greeting*: Use this greeting instead of 'Hello'</li></ul> |
+| /player | POST a new player to be tracked | <ul><li>*name*: The current summoner name of the player to be added</li></ul> |
+| /players | Get a List of all tracked players | N/A |
