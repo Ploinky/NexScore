@@ -104,13 +104,13 @@ test('Application created', () => {
         "Properties": {
             "KeySchema": [
                 {
-                    "AttributeName": "name",
+                    "AttributeName": "puuid",
                     "KeyType": "HASH"
                 }
             ],
             "AttributeDefinitions": [
                 {
-                    "AttributeName": "name",
+                    "AttributeName": "puuid",
                     "AttributeType": "S"
                 }
             ],

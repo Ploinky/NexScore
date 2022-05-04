@@ -45,9 +45,9 @@ public class DbIntegrationTest {
     @BeforeAll
     public static void before(@Autowired AmazonDynamoDB amazonDynamoDb) {
         amazonDynamoDb.createTable(
-                new CreateTableRequest(Arrays.asList(new AttributeDefinition("name", "S")),
+                new CreateTableRequest(Arrays.asList(new AttributeDefinition("puuid", "S")),
                         "Player",
-                        Arrays.asList(new KeySchemaElement("name", KeyType.HASH)),
+                        Arrays.asList(new KeySchemaElement("puuid", KeyType.HASH)),
                         new ProvisionedThroughput(1L, 1L))
         );
     }
