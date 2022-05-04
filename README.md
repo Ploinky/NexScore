@@ -1,3 +1,5 @@
+[![checkstyle/build/deploy](https://github.com/Ploinky/NexScore/actions/workflows/checkstyle_build_deploy.yml/badge.svg)](https://github.com/Ploinky/NexScore/actions/workflows/checkstyle_build_deploy.yml)
+
 # NexScore
 Nexus last hit counter for League of Legends
 
