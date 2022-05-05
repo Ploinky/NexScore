@@ -117,11 +117,29 @@ public class PlayerControllerTest extends DbIntegrationTest {
 
         RiotApiClientPlayer riotPlayer = new RiotApiClientPlayer();
         riotPlayer.setName("PlayerName1");
+        riotPlayer.setPuuid("other-puuid");
+
+        mockBackendEndpoint(200, objectMapper.writeValueAsString(riotPlayer));
+
+        mockMvc.perform(post("/player?name=" + riotPlayer.getName()))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testPlayerPostDuplicatePuuid() throws Exception {
+        Player player = new Player("PlayerName1");
+        player.setPuuid("test-puuid");
+
+        playerRepository.save(player);
+
+        RiotApiClientPlayer riotPlayer = new RiotApiClientPlayer();
+        riotPlayer.setName("PlayerName2");
         riotPlayer.setPuuid("test-puuid");
 
         mockBackendEndpoint(200, objectMapper.writeValueAsString(riotPlayer));
 
-        mockMvc.perform(post("/player?name=" + player.getName()))
+        mockMvc.perform(post("/player?name=" + riotPlayer.getName()))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
                 .andExpect(status().reason("Player already exists"));
