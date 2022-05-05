@@ -33,6 +33,8 @@ jobs:
       - name: Run cdk test
         working-directory: ./aws-cdk
         run: |
+          npm install
+          npm install -g aws-cdk
           npm test
           
   build:
