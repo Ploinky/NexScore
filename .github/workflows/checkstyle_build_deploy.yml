@@ -29,6 +29,7 @@ jobs:
     needs: checkstyle
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Run cdk test
         working-directory: ./aws-cdk
         run: |
