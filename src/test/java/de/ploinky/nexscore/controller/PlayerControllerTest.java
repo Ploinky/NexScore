@@ -16,6 +16,7 @@ import de.ploinky.nexscore.DbIntegrationTest;
 import de.ploinky.nexscore.NexScoreAppApplication;
 import de.ploinky.nexscore.TestConfig;
 import de.ploinky.nexscore.model.Player;
+import de.ploinky.nexscore.repository.PlayerRepository;
 import de.ploinky.nexscore.riot.RiotApiClientPlayer;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,6 +53,9 @@ public class PlayerControllerTest extends DbIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private PlayerRepository playerRepository;
 
     @BeforeEach
     public void before() {
@@ -106,19 +110,14 @@ public class PlayerControllerTest extends DbIntegrationTest {
 
     @Test
     public void testPlayerPostDuplicateName() throws Exception {
-        RiotApiClientPlayer riotPlayer = new RiotApiClientPlayer();
-        riotPlayer.setName("PlayerName1");
-        riotPlayer.setPuuid("test-puuid");
-
         Player player = new Player("PlayerName1");
         player.setPuuid("test-puuid");
 
-        mockBackendEndpoint(200, objectMapper.writeValueAsString(riotPlayer));
+        playerRepository.save(player);
 
-        mockMvc.perform(post("/player?name=" + player.getName()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(player)));
+        RiotApiClientPlayer riotPlayer = new RiotApiClientPlayer();
+        riotPlayer.setName("PlayerName1");
+        riotPlayer.setPuuid("test-puuid");
 
         mockBackendEndpoint(200, objectMapper.writeValueAsString(riotPlayer));
 
@@ -142,19 +141,10 @@ public class PlayerControllerTest extends DbIntegrationTest {
 
     @Test
     public void testPlayersGet() throws Exception {
-        RiotApiClientPlayer riotPlayer = new RiotApiClientPlayer();
-        riotPlayer.setName("Player123");
-        riotPlayer.setPuuid("test-puuid-123");
-
         Player player = new Player("Player123");
         player.setPuuid("test-puuid-123");
 
-        mockBackendEndpoint(200, objectMapper.writeValueAsString(riotPlayer));
-
-        mockMvc.perform(post("/player?name=" + player.getName()))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(content().json(objectMapper.writeValueAsString(player)));
+        playerRepository.save(player);
 
         List<Player> playerList = new ArrayList<>();
         playerList.add(player);
