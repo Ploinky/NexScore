@@ -24,9 +24,21 @@ jobs:
         distribution: 'temurin'
     - name: Checkstyle with Gradle
       run: ./gradlew checkstyleMain
-      
-  build:
+  
+  test:
     needs: checkstyle
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run cdk test
+        working-directory: ./aws-cdk
+        run: |
+          npm install
+          npm install -g aws-cdk
+          npm test
+          
+  build:
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
