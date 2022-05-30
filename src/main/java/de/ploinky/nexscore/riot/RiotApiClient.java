@@ -1,9 +1,12 @@
 package de.ploinky.nexscore.riot;
 
 import de.ploinky.nexscore.exception.ExternalApiErrorException;
+import de.ploinky.nexscore.exception.MatchDoesNotExistException;
 import de.ploinky.nexscore.exception.SummonerDoesNotExistException;
 import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,6 +17,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 
 @Service
 public class RiotApiClient {
+    private static final Logger log = LoggerFactory.getLogger(RiotApiClient.class);
+
     @Autowired
     private WebClient webClient;
 
@@ -65,8 +70,7 @@ public class RiotApiClient {
                 .onErrorMap(WebClientResponseException.class, e -> {
                     HttpStatus status = e.getStatusCode();
                     if (status == HttpStatus.valueOf(404)) {
-                        // TODO: 23.05.22 Use custom exception
-                        return new RuntimeException();
+                        return new MatchDoesNotExistException();
                     } else {
                         return new ExternalApiErrorException();
                     }

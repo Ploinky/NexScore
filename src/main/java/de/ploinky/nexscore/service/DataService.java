@@ -1,6 +1,7 @@
 package de.ploinky.nexscore.service;
 
 import de.ploinky.nexscore.model.Player;
+import de.ploinky.nexscore.repository.MatchRepository;
 import de.ploinky.nexscore.riot.RiotApiClient;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,9 @@ public class DataService {
     @Autowired
     private MatchService matchService;
 
+    @Autowired
+    private MatchRepository matchRepository;
+
     @Scheduled(cron = "5 * * * * *")
     public void readData() {
         Player player = playerService.getPlayers().stream().findFirst().orElse(null);
@@ -39,8 +43,10 @@ public class DataService {
             return;
         }
 
-        matchIds.forEach(matchId -> {
-            matchService.createMatch(matchId);
-        });
+        matchIds.stream()
+                .filter(matchId -> !matchRepository.existsById(matchId))
+                .forEach(matchId -> {
+                    matchService.createMatch(matchId);
+                });
     }
 }

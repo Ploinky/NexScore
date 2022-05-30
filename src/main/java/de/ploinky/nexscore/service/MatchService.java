@@ -1,9 +1,12 @@
 package de.ploinky.nexscore.service;
 
+import de.ploinky.nexscore.exception.MatchCreationFailedDuplicateException;
+import de.ploinky.nexscore.exception.MatchCreationFailedNoMatchIdException;
+import de.ploinky.nexscore.exception.MatchDoesNotExistException;
 import de.ploinky.nexscore.model.Match;
+import de.ploinky.nexscore.riot.RiotApiClientMatch;
 import de.ploinky.nexscore.repository.MatchRepository;
 import de.ploinky.nexscore.riot.RiotApiClient;
-import de.ploinky.nexscore.riot.RiotApiClientMatch;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,24 +25,20 @@ public class MatchService {
 
     public Match createMatch(String matchId) {
         if (Objects.isNull(matchId) || matchId.isBlank()) {
-            // TODO: 20.05.22 Replace with custom exception
-            throw new RuntimeException();
+            throw new MatchCreationFailedNoMatchIdException();
         }
 
         if (matchRepository.existsById(matchId)) {
-            // TODO: 20.05.22 Replace with custom exception
-            throw new RuntimeException();
-
+            throw new MatchCreationFailedDuplicateException();
         }
 
         log.info(matchId);
 
-        // TODO: 20.05.22 Fetch match from Riot API
-        // TODO: 23.05.22 Use custom exception
         RiotApiClientMatch riotMatch = riotApiClient.getMatchByMatchId(matchId).orElseThrow(() ->
-                new RuntimeException());
+                new MatchDoesNotExistException());
 
-        Match match = new Match(riotMatch.getMetadata().matchId);
+        Match match = new Match();
+        match.setMatchId(riotMatch.metadata.matchId);
         matchRepository.save(match);
 
         return match;
