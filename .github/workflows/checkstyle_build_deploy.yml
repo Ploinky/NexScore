@@ -12,6 +12,12 @@ on:
     branches:
       - '*'
       
+env:
+  RIOT_API_KEY: ${{secrets.RIOT_API_KEY}}
+  DYNAMODB_REGION: ${{secrets.DYNAMODB_REGION}}
+  ACCESS_KEY_ID: ${{secrets.ACCESS_KEY_ID}}
+  SECRET_ACCESS_KEY: ${{secrets.SECRET_ACCESS_KEY}}
+  
 jobs:
   checkstyle:
     runs-on: ubuntu-latest
