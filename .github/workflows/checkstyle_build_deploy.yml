@@ -104,5 +104,5 @@ jobs:
           use_existing_version_if_available: true
       - name: Update DNS record
         run: |
-          elbDns=${aws cloudformation describe-stacks --stack-name NexScoreStack --query "Stacks[0].Outputs[?OutputKey=='elbDns'].OutputValue"}
+          elbDns=$(aws cloudformation describe-stacks --stack-name NexScoreStack --query "Stacks[0].Outputs[?OutputKey=='elbDns'].OutputValue" --output text)
           echo $elbDns
