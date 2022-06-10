@@ -105,6 +105,9 @@ jobs:
           deployment_package: NexScoreApp-0.0.1-SNAPSHOT.jar
           use_existing_version_if_available: true
       - name: Update DNS record
+        env:
+          DNS_API: ${{secrets.DNS_API}}
+          DNS_API_KEY: ${{secrets.DNS_API_KEY}}
         run: |
           elbDns=$(aws cloudformation describe-stacks --region $DYNAMODB_REGION --stack-name NexScoreStack --query "Stacks[0].Outputs[?OutputKey=='elbDns'].OutputValue" --output text)
-          echo $elbDns
+          curl -X PUT "$DNS_API" -H "accept: application/json" -H "X-API-Key: $DNS_API_KEY" -H "Content-Type: application/json" -d "{\"disabled\":false,\"content\":\"$elbDns\",\"ttl\":60,\"prio\":0}"
