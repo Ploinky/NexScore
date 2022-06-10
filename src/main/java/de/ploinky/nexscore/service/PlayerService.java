@@ -41,6 +41,10 @@ public class PlayerService {
         return player;
     }
 
+    public void updatePlayer(Player player) {
+        playerRepository.save(player);
+    }
+
     public List<Player> getPlayers() {
         return playerRepository.findAll();
     }

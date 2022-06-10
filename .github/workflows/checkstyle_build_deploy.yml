@@ -12,6 +12,12 @@ on:
     branches:
       - '*'
       
+env:
+  RIOT_API_KEY: ${{secrets.RIOT_API_KEY}}
+  DYNAMODB_REGION: ${{secrets.DYNAMODB_REGION}}
+  ACCESS_KEY_ID: ${{secrets.ACCESS_KEY_ID}}
+  SECRET_ACCESS_KEY: ${{secrets.SECRET_ACCESS_KEY}}
+  
 jobs:
   checkstyle:
     runs-on: ubuntu-latest
@@ -96,3 +102,7 @@ jobs:
           version_label: ${{github.SHA}}
           deployment_package: NexScoreApp-0.0.1-SNAPSHOT.jar
           use_existing_version_if_available: true
+      - name: Update DNS record
+        run: |
+          elbDns=${aws cloudformation describe-stacks --stack-name NexScoreStack --query "Stacks[0].Outputs[?OutputKey=='elbDns'].OutputValue"}
+          echo $elbDns

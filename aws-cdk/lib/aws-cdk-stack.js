@@ -1,12 +1,17 @@
-const { Stack, RemovalPolicy, aws_dynamodb} = require('aws-cdk-lib');
-const aws_elasticbeanstalk = require('aws-cdk-lib/aws-elasticbeanstalk');
+const { Stack, RemovalPolicy, CfnOutput} = require('aws-cdk-lib');
+const eb = require('aws-cdk-lib/aws-elasticbeanstalk');
 const iam = require('aws-cdk-lib/aws-iam');
+const acm = require('aws-cdk-lib/aws-certificatemanager');
+const elbv2 = require('aws-cdk-lib/aws-elasticloadbalancingv2');
+const ec2 = require('aws-cdk-lib/aws-ec2');
+const db = require('aws-cdk-lib/aws-dynamodb')
+const ag = require("aws-cdk-lib/aws-autoscaling");
 
-class AwsCdkStack extends Stack {
+class NexScoreStack extends Stack {
   constructor(scope, id, props) {
     super(scope, id, props);
 
-    const application = new aws_elasticbeanstalk.CfnApplication(this, 'Application', {
+    const application = new eb.CfnApplication(this, 'Application', {
       applicationName: 'NexScore'
     });
 
@@ -26,51 +31,117 @@ class AwsCdkStack extends Stack {
       actions: ['elasticbeanstalk:PutInstanceStatistics']
     }));
 
-    const environment = new aws_elasticbeanstalk.CfnEnvironment(this, 'Environment', {
+    const cert = new acm.Certificate(this, 'Certificate', {
+      domainName: 'api.ploinky.de',
+      validation: acm.CertificateValidation.fromDns(), // Records must be added manually
+    });
+
+    const environment = new eb.CfnEnvironment(this, 'Environment', {
       environmentName: 'NexScore-env',
       applicationName: 'NexScore',
       solutionStackName: '64bit Amazon Linux 2 v3.2.12 running Corretto 11',
-      optionSettings: [{
-        namespace: 'aws:autoscaling:launchconfiguration',
-        optionName: 'IamInstanceProfile',
-        value: ebInstanceProfile.attrArn
-      },
-      {
-        namespace: 'aws:autoscaling:launchconfiguration',
-        optionName: 'InstanceType',
-        value: 't2.micro'
-      },
-      {
-        namespace: 'aws:elasticbeanstalk:application:environment',
-        optionName: 'SERVER_PORT',
-        value: '5000'
-      },,
-      {
-        namespace: 'aws:elasticbeanstalk:application:environment',
-        optionName: 'DYNAMODB_ENDPOINT',
-        value: 'https://dynamodb.eu-central-1.amazonaws.com'
-      }]
+      optionSettings: [
+        {
+          namespace: 'aws:autoscaling:launchconfiguration',
+          optionName: 'IamInstanceProfile',
+          value: ebInstanceProfile.attrArn
+        },
+        {
+          namespace: 'aws:autoscaling:launchconfiguration',
+          optionName: 'InstanceType',
+          value: 't2.micro'
+        },
+        {
+          namespace: 'aws:elasticbeanstalk:application:environment',
+          optionName: 'SERVER_PORT',
+          value: '5000'
+        },
+        {
+          namespace: 'aws:elasticbeanstalk:application:environment',
+          optionName: 'DYNAMODB_ENDPOINT',
+          value: 'https://dynamodb.eu-central-1.amazonaws.com'
+        },
+        {
+          namespace: 'aws:elasticbeanstalk:application:environment',
+          optionName: 'ACCESS_KEY_ID',
+          value: process.env.ACCESS_KEY_ID
+        },
+        {
+          namespace: 'aws:elasticbeanstalk:application:environment',
+          optionName: 'SECRET_ACCESS_KEY',
+          value: process.env.SECRET_ACCESS_KEY
+        },
+        {
+          namespace: 'aws:elasticbeanstalk:application:environment',
+          optionName: 'RIOT_API_KEY',
+          value: process.env.RIOT_API_KEY
+        },
+        {
+          namespace: 'aws:elasticbeanstalk:application:environment',
+          optionName: 'DYNAMODB_REGION',
+          value: process.env.DYNAMODB_REGION
+        },
+        {
+          namespace: 'aws:elasticbeanstalk:environment',
+          optionName: 'LoadBalancerType',
+          value: 'application'
+        },
+        {
+          namespace: 'aws:elbv2:listener:443',
+          optionName: 'ListenerEnabled',
+          value: 'true'
+        },
+        {
+          namespace: 'aws:elbv2:listener:default',
+          optionName: 'ListenerEnabled',
+          value: 'false'
+        },
+        {
+          namespace: 'aws:elbv2:listener:443',
+          optionName: 'SSLCertificateArns',
+          value: cert.certificateArn
+        },
+        {
+          namespace: 'aws:elbv2:listener:443',
+          optionName: 'Protocol',
+          value: 'HTTPS'
+        }
+      ]
     });
 
     environment.addDependsOn(application);
 
-    const playerTable = new aws_dynamodb.Table(this, 'Player', {
+    const playerTable = new db.Table(this, 'Player', {
       removalPolicy: RemovalPolicy.DESTROY,
-      partitionKey: {name: 'puuid', type: aws_dynamodb.AttributeType.STRING},
+      partitionKey: {name: 'puuid', type: db.AttributeType.STRING},
       tableName: 'Player'
     });
 
-    playerTable.grantReadWriteData(ebRole);
+    playerTable.grantFullAccess(ebRole);
 
-    const matchTable = new aws_dynamodb.Table(this, 'Match', {
+    const matchTable = new db.Table(this, 'Match', {
       removalPolicy: RemovalPolicy.DESTROY,
-      partitionKey: {name: 'matchid', type: aws_dynamodb.AttributeType.STRING},
+      partitionKey: {name: 'matchid', type: db.AttributeType.STRING},
       tableName: 'Match'
     });
 
-    matchTable.grantReadWriteData(ebRole);
+    matchTable.grantFullAccess(ebRole);
 
+    const player2MatchTable = new db.Table(this, 'Player2Match', {
+      removalPolicy: RemovalPolicy.DESTROY,
+      partitionKey: {name: 'puuid', type: db.AttributeType.STRING},
+      sortKey: {name: 'matchid', type: db.AttributeType.STRING},
+      tableName: 'Player2Match'
+    });
+
+    player2MatchTable.grantFullAccess(ebRole);
+
+    new CfnOutput(this, "elbDns", {
+        id: "elbDns",
+        value: environment.attrEndpointUrl,
+        description: "DNS name of the created Elastic LoadBalancer",
+        exportName: "elbDns"});
   };
 }
 
-module.exports = { AwsCdkStack }
+module.exports = { NexScoreStack }
