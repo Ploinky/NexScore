@@ -27,10 +27,9 @@ dependencies {
 	testImplementation 'org.testcontainers:testcontainers:1.17.1'
 	testImplementation 'org.testcontainers:junit-jupiter:1.17.1'
 
-	implementation group: 'org.springframework.data', name: 'spring-data-releasetrain', version: 'Lovelace-SR16', ext: 'pom'
-	implementation group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.12.186'
+	implementation group: 'org.springframework.data', name: 'spring-data-releasetrain', version: '1.4.6.RELEASE', ext: 'pom'
+	implementation group: 'com.amazonaws', name: 'aws-java-sdk-dynamodb', version: '1.12.220'
 	implementation 'io.github.boostchicken:spring-data-dynamodb:5.2.5'
-
 }
 
 tasks.named('test') {
