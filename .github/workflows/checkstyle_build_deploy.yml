@@ -69,7 +69,6 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v1
       - name: Use Node.js 16.3
@@ -102,3 +101,7 @@ jobs:
           version_label: ${{github.SHA}}
           deployment_package: NexScoreApp-0.0.1-SNAPSHOT.jar
           use_existing_version_if_available: true
+      - name: Update DNS record
+        run: |
+          elbDns=${aws cloudformation describe-stacks --stack-name NexScoreStack --query "Stacks[0].Outputs[?OutputKey=='elbDns'].OutputValue"}
+          echo $elbDns
