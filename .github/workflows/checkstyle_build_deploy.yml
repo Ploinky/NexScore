@@ -59,7 +59,7 @@ jobs:
         arguments: build
           --info
     - name: Archive code coverage results
-      if: github.ref == 'refs/heads/main'
+      #if: github.ref == 'refs/heads/main'
       uses: actions/upload-artifact@v3
       with:
         name: jar
@@ -69,7 +69,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    #if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v1
       - name: Use Node.js 16.3
@@ -104,5 +104,5 @@ jobs:
           use_existing_version_if_available: true
       - name: Update DNS record
         run: |
-          elbDns=$(aws cloudformation describe-stacks --stack-name NexScoreStack --query "Stacks[0].Outputs[?OutputKey=='elbDns'].OutputValue" --output text)
+          elbDns=$(aws cloudformation describe-stacks --region $DYNAMODB_REGION --stack-name NexScoreStack --query "Stacks[0].Outputs[?OutputKey=='elbDns'].OutputValue" --output text)
           echo $elbDns
