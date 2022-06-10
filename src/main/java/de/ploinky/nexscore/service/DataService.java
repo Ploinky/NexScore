@@ -3,6 +3,7 @@ package de.ploinky.nexscore.service;
 import de.ploinky.nexscore.model.Player;
 import de.ploinky.nexscore.repository.MatchRepository;
 import de.ploinky.nexscore.riot.RiotApiClient;
+import de.ploinky.nexscore.riot.RiotApiClientPlayer;
 import java.util.ArrayList;
 import java.util.List;
 import org.slf4j.Logger;
@@ -29,24 +30,33 @@ public class DataService {
 
     @Scheduled(cron = "5 * * * * *")
     public void readData() {
-        Player player = playerService.getPlayers().stream().findFirst().orElse(null);
+        playerService.getPlayers()
+            .stream()
+            .findFirst()
+            .ifPresent(this::updatePlayer);
+    }
 
-        if (player == null) {
-            return;
-        }
+    private void updatePlayerData(Player player) {
+        updatePlayer(player);
+        updatePlayerMatches(player);
+    }
 
-        List<String> matchIds = riotApiClient.getMatchIdsByPuuid(player.getPuuid())
-                .orElse(new ArrayList<>());
+    private void updatePlayer(Player player) {
+        riotApiClient.getPlayerByPuuid(player.getPuuid())
+            .ifPresent(p -> {
+                player.setName(p.getName());
+                playerService.updatePlayer(player);
+            });
+    }
 
-        if (matchIds.isEmpty()) {
-            log.info("No matches found for player <" + player.getName() + ">");
-            return;
-        }
-
-        matchIds.stream()
-                .filter(matchId -> !matchRepository.existsById(matchId))
-                .forEach(matchId -> {
-                    matchService.createMatch(matchId);
+    private void updatePlayerMatches(Player player) {
+        riotApiClient.getMatchIdsByPuuid(player.getPuuid())
+                .ifPresent(matchIds -> {
+                    matchIds.stream()
+                        .filter(matchId -> !matchRepository.existsById(matchId))
+                        .forEach(matchId -> {
+                            matchService.createMatch(matchId);
+                        });
                 });
     }
 }

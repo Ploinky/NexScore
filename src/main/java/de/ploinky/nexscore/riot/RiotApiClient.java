@@ -44,6 +44,23 @@ public class RiotApiClient {
             .blockOptional();
     }
 
+    public Optional<RiotApiClientPlayer> getPlayerByPuuid(String puuid) {
+        return webClient.get()
+                .uri("/lol/summoner/v4/summoners/by-puuid/{puuid}?api_key={riotApiKey}",
+                        puuid, riotApiKey)
+                .retrieve()
+                .bodyToMono(RiotApiClientPlayer.class)
+                .onErrorMap(WebClientResponseException.class, e -> {
+                    HttpStatus status = e.getStatusCode();
+                    if (status == HttpStatus.valueOf(404)) {
+                        return new SummonerDoesNotExistException();
+                    } else {
+                        return new ExternalApiErrorException();
+                    }
+                })
+                .blockOptional();
+    }
+
     public Optional<List<String>> getMatchIdsByPuuid(String puuid) {
         return webClientEurope.get()
                 .uri("/lol/match/v5/matches/by-puuid/{puuid}/ids?api_key={riotApiKey}",
