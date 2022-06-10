@@ -13,6 +13,8 @@ on:
       - '*'
       
 env:
+  AWS_SECRET_ACCESS_KEY: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+  AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
   RIOT_API_KEY: ${{secrets.RIOT_API_KEY}}
   DYNAMODB_REGION: ${{secrets.DYNAMODB_REGION}}
   ACCESS_KEY_ID: ${{secrets.ACCESS_KEY_ID}}
@@ -59,7 +61,7 @@ jobs:
         arguments: build
           --info
     - name: Archive code coverage results
-      if: github.ref == 'refs/heads/main'
+      #if: github.ref == 'refs/heads/main'
       uses: actions/upload-artifact@v3
       with:
         name: jar
@@ -69,7 +71,7 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    #if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v1
       - name: Use Node.js 16.3
@@ -103,6 +105,9 @@ jobs:
           deployment_package: NexScoreApp-0.0.1-SNAPSHOT.jar
           use_existing_version_if_available: true
       - name: Update DNS record
+        env:
+          DNS_API: ${{secrets.DNS_API}}
+          DNS_API_KEY: ${{secrets.DNS_API_KEY}}
         run: |
-          elbDns=$(aws cloudformation describe-stacks --stack-name NexScoreStack --query "Stacks[0].Outputs[?OutputKey=='elbDns'].OutputValue" --output text)
-          echo $elbDns
+          elbDns=$(aws cloudformation describe-stacks --region $DYNAMODB_REGION --stack-name NexScoreStack --query "Stacks[0].Outputs[?OutputKey=='elbDns'].OutputValue" --output text)
+          curl -X PUT "$DNS_API" -H "accept: application/json" -H "X-API-Key: $DNS_API_KEY" -H "Content-Type: application/json" -d "{\"disabled\":false,\"content\":\"$elbDns\",\"ttl\":60,\"prio\":0}"
